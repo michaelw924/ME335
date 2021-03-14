@@ -19,8 +19,9 @@ mean100 = mean([mean(data.x100),mean(data.y100)]);
 
 % Plot 40mph
 figure;
+
 subplot(2,2,1);
-hold on;
+
 title('Results from 40 mph');
 grid on;
 plot(data.Position,data.x40);
