@@ -1,18 +1,35 @@
+% Code by Michael White to calculate the density for ME 335L Lab Report 2
 clear;clc;
 
 % Setup initials
-p = [13.908 13.911 13.908 13.908 13.908 13.905];
-t = [24.475 24.65 24.75 24.775 24.8 24.75];
-R = 287.2;
+rawP_PSI = [13.908 13.911 13.908 13.908 13.908 13.905];
+rawT_C = [24.475 24.65 24.75 24.775 24.8 24.75];
+R = 286.9;
 
-% Calculate mean temp and shift to kelvin
-t = mean(t) + 273.15;
+% Caclulate the mean and std dev of absolute pressure in PSI
+avgP_PSI = mean(rawP_PSI);
+stdP_PSI = std(rawP_PSI);
 
-% convert pressure to Pa
-p = p*6894.757;
+% Calculate mean and std dev of temperature in Celsius
+avgT_C = mean(rawT_C);
+stdT_C = std(rawT_C);
 
-% compute avg p
-p = mean(p);
+% Convert raw data to desired units
+rawP_Pa = rawP_PSI*6894.757;
+rawT_K = rawT_C+273.15;
 
-rho = p/(R*t);
+% Calculate mean and std dev of absolute pressure in Pa
+avgP_Pa = mean(rawP_Pa);
+stdP_Pa = std(rawP_Pa);
+
+% Calcuate mean and std dev of temperature in Kelvin
+avgT_K = mean(rawT_K);
+stdT_K = std(rawT_K);
+
+% Calculate rho and std dev of rho from known values in SI
+rho = avgP_Pa/(R*avgT_K);
+rho_std = rho*sqrt((stdP_Pa/avgP_Pa)^2+(stdT_K/avgT_K)^2);
+
+% Display rho
 display(rho);
+display(rho_std);
