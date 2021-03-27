@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>experimental_calculations</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-03-14"><meta name="DC.source" content="experimental_calculations.m"><style type="text/css">
+      --><title>experimental_calculations</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-03-15"><meta name="DC.source" content="experimental_calculations.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -87,15 +87,15 @@ rho = 1.1222;
 rhoStdDev = 4.8250e-04;
 
 <span class="comment">% Calculate total area of the tube</span>
-tubeArea = (pi/4)*(tubeDiam^2);
+tubeArea_in = (pi/4)*(tubeDiam^2);
 clear <span class="string">tubeDiam</span>;
 
 <span class="comment">% Find area for split regions</span>
-equalArea = tubeArea/n;
+equalArea_in = tubeArea_in/n;
 
 <span class="comment">% Convert equalArea and tubeArea to m^2</span>
-equalArea = equalArea*0.00064516;
-tubeArea = tubeArea*0.00064516;
+equalArea_m = equalArea_in*0.00064516;
+tubeArea_m = tubeArea_in*0.00064516;
 
 <span class="comment">% Find average velocity and standard deviation of this velocity per region</span>
 <span class="keyword">for</span> speed = 1:4
@@ -105,8 +105,8 @@ tubeArea = tubeArea*0.00064516;
         avgVelocitiesInRegions(position) = mean([data.velocityDataSource(position,1:2) data.velocityDataSource(12-position,1:2)]);
         stdDevInRegions(position) = sqrt(sum([data.stdDevDataSource(position,1:2) data.stdDevDataSource(12-position,1:2)].^2));
     <span class="keyword">end</span>
-    Vavg(speed) = sum(avgVelocitiesInRegions*equalArea)/tubeArea;
-    VavgStdDev(speed) =  sqrt(sum((stdDevInRegions*equalArea).^2)/tubeArea);
+    Vavg(speed) = sum(avgVelocitiesInRegions*equalArea_m)/tubeArea_m;
+    VavgStdDev(speed) =  sqrt(sum((stdDevInRegions*equalArea_m).^2)/tubeArea_m);
     clear <span class="string">avgVelocitiesInRegions</span>; clear <span class="string">stdDevInRegions</span>; clear <span class="string">position</span>;
 <span class="keyword">end</span>
 clear <span class="string">data.velocityDataSource</span>; clear <span class="string">data.stdDevDataSource</span>; clear <span class="string">speed</span>; clear <span class="string">n</span>;
@@ -164,8 +164,8 @@ legend(<span class="string">'X-axis'</span>,<span class="string">'Y-axis'</span>
 xlabel(<span class="string">'Position (in)'</span>);ylabel(<span class="string">'Velocity (m/s)'</span>);
 
 <span class="comment">% Calculate volumetric flow rates and std deviations from Vavg, VavgStdDev, and tubeArea</span>
-Qtube = Vavg*tubeArea;
-QstdDev = VavgStdDev*tubeArea;
+Qtube = Vavg*tubeArea_m;
+QstdDev = VavgStdDev*tubeArea_m;
 
 <span class="comment">% Calculate mass flow rate from Qtube, QstdDev, and density</span>
 mdot = Qtube*rho;
@@ -179,6 +179,51 @@ data.Vmax_data = table2array(data.rawData(6,2:2:16));
     Vmax_experimental(i) = mean([data.Vmax_data(2*i-1) data.Vmax_data(2*i)]);
     developmentPercent(i) = Vmax_experimental(i)/Vmax_theoretical(i);
 <span class="keyword">end</span>
+
+<span class="comment">% Display results in order they appear in report</span>
+display(Vavg); display(VavgStdDev);
+display(Qtube); display(QstdDev);
+display(mdot); display(mdotStdDev);
+display(developmentPercent);
+</pre><pre class="codeoutput">
+Vavg =
+
+   12.2260    9.6453    7.2074    4.8481
+
+
+VavgStdDev =
+
+    0.0141    0.0107    0.0093    0.0082
+
+
+Qtube =
+
+    0.2279    0.1798    0.1343    0.0904
+
+
+QstdDev =
+
+   1.0e-03 *
+
+    0.2628    0.1999    0.1726    0.1533
+
+
+mdot =
+
+    0.2557    0.2017    0.1508    0.1014
+
+
+mdotStdDev =
+
+   1.0e-03 *
+
+    0.3267    0.2577    0.1926    0.1295
+
+
+developmentPercent =
+
+    0.5660    0.5705    0.5980    0.5770
+
 </pre><img vspace="5" hspace="5" src="experimental_calculations_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 % Code by Michael White to develop graphs and calculate experimental values for ME 335L Lab Report 2
@@ -201,15 +246,15 @@ rho = 1.1222;
 rhoStdDev = 4.8250e-04;
 
 % Calculate total area of the tube
-tubeArea = (pi/4)*(tubeDiam^2);
+tubeArea_in = (pi/4)*(tubeDiam^2);
 clear tubeDiam;
 
 % Find area for split regions
-equalArea = tubeArea/n;
+equalArea_in = tubeArea_in/n;
 
 % Convert equalArea and tubeArea to m^2
-equalArea = equalArea*0.00064516;
-tubeArea = tubeArea*0.00064516;
+equalArea_m = equalArea_in*0.00064516;
+tubeArea_m = tubeArea_in*0.00064516;
 
 % Find average velocity and standard deviation of this velocity per region
 for speed = 1:4
@@ -219,8 +264,8 @@ for speed = 1:4
         avgVelocitiesInRegions(position) = mean([data.velocityDataSource(position,1:2) data.velocityDataSource(12-position,1:2)]);
         stdDevInRegions(position) = sqrt(sum([data.stdDevDataSource(position,1:2) data.stdDevDataSource(12-position,1:2)].^2));
     end
-    Vavg(speed) = sum(avgVelocitiesInRegions*equalArea)/tubeArea;
-    VavgStdDev(speed) =  sqrt(sum((stdDevInRegions*equalArea).^2)/tubeArea);
+    Vavg(speed) = sum(avgVelocitiesInRegions*equalArea_m)/tubeArea_m;
+    VavgStdDev(speed) =  sqrt(sum((stdDevInRegions*equalArea_m).^2)/tubeArea_m);
     clear avgVelocitiesInRegions; clear stdDevInRegions; clear position;
 end
 clear data.velocityDataSource; clear data.stdDevDataSource; clear speed; clear n;
@@ -278,8 +323,8 @@ legend('X-axis','Y-axis','Average Velocity');
 xlabel('Position (in)');ylabel('Velocity (m/s)');
 
 % Calculate volumetric flow rates and std deviations from Vavg, VavgStdDev, and tubeArea
-Qtube = Vavg*tubeArea;
-QstdDev = VavgStdDev*tubeArea;
+Qtube = Vavg*tubeArea_m;
+QstdDev = VavgStdDev*tubeArea_m;
 
 % Calculate mass flow rate from Qtube, QstdDev, and density
 mdot = Qtube*rho;
@@ -293,5 +338,11 @@ for i = 1:length(Vmax_theoretical)
     Vmax_experimental(i) = mean([data.Vmax_data(2*i-1) data.Vmax_data(2*i)]);
     developmentPercent(i) = Vmax_experimental(i)/Vmax_theoretical(i);
 end
+
+% Display results in order they appear in report
+display(Vavg); display(VavgStdDev);
+display(Qtube); display(QstdDev);
+display(mdot); display(mdotStdDev);
+display(developmentPercent);
 ##### SOURCE END #####
 --></body></html>

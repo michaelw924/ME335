@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>density_calculations</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-03-14"><meta name="DC.source" content="density_calculations.m"><style type="text/css">
+      --><title>density_calculations</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-03-15"><meta name="DC.source" content="density_calculations.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -99,10 +99,58 @@ stdT_K = std(rawT_K);
 rho = avgP_Pa/(R*avgT_K);
 rho_std = rho*sqrt((stdP_Pa/avgP_Pa)^2+(stdT_K/avgT_K)^2);
 
+<span class="comment">% Display pressure values in PSI and Pa</span>
+display(avgP_PSI);display(stdP_PSI);
+display(avgP_Pa);display(stdP_Pa);
+
+<span class="comment">% Display temperature values in C and K</span>
+display(avgT_C);display(stdT_C);
+display(avgT_K);display(stdT_K);
+
 <span class="comment">% Display rho</span>
 display(rho);
 display(rho_std);
 </pre><pre class="codeoutput">
+avgP_PSI =
+
+   13.9080
+
+
+stdP_PSI =
+
+    0.0019
+
+
+avgP_Pa =
+
+   9.5892e+04
+
+
+stdP_Pa =
+
+   13.0819
+
+
+avgT_C =
+
+   24.7000
+
+
+stdT_C =
+
+    0.1214
+
+
+avgT_K =
+
+  297.8500
+
+
+stdT_K =
+
+    0.1214
+
+
 rho =
 
     1.1222
@@ -145,6 +193,14 @@ stdT_K = std(rawT_K);
 % Calculate rho and std dev of rho from known values in SI
 rho = avgP_Pa/(R*avgT_K);
 rho_std = rho*sqrt((stdP_Pa/avgP_Pa)^2+(stdT_K/avgT_K)^2);
+
+% Display pressure values in PSI and Pa
+display(avgP_PSI);display(stdP_PSI);
+display(avgP_Pa);display(stdP_Pa);
+
+% Display temperature values in C and K
+display(avgT_C);display(stdT_C);
+display(avgT_K);display(stdT_K);
 
 % Display rho
 display(rho);

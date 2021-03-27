@@ -18,15 +18,15 @@ rho = 1.1222;
 rhoStdDev = 4.8250e-04;
 
 % Calculate total area of the tube
-tubeArea = (pi/4)*(tubeDiam^2);
+tubeArea_in = (pi/4)*(tubeDiam^2);
 clear tubeDiam;
 
 % Find area for split regions
-equalArea = tubeArea/n;
+equalArea_in = tubeArea_in/n;
 
 % Convert equalArea and tubeArea to m^2
-equalArea = equalArea*0.00064516;
-tubeArea = tubeArea*0.00064516;
+equalArea_m = equalArea_in*0.00064516;
+tubeArea_m = tubeArea_in*0.00064516;
 
 % Find average velocity and standard deviation of this velocity per region
 for speed = 1:4
@@ -36,8 +36,8 @@ for speed = 1:4
         avgVelocitiesInRegions(position) = mean([data.velocityDataSource(position,1:2) data.velocityDataSource(12-position,1:2)]);
         stdDevInRegions(position) = sqrt(sum([data.stdDevDataSource(position,1:2) data.stdDevDataSource(12-position,1:2)].^2));
     end
-    Vavg(speed) = sum(avgVelocitiesInRegions*equalArea)/tubeArea;
-    VavgStdDev(speed) =  sqrt(sum((stdDevInRegions*equalArea).^2)/tubeArea);
+    Vavg(speed) = sum(avgVelocitiesInRegions*equalArea_m)/tubeArea_m;
+    VavgStdDev(speed) =  sqrt(sum((stdDevInRegions*equalArea_m).^2)/tubeArea_m);
     clear avgVelocitiesInRegions; clear stdDevInRegions; clear position;
 end
 clear data.velocityDataSource; clear data.stdDevDataSource; clear speed; clear n;
@@ -95,8 +95,8 @@ legend('X-axis','Y-axis','Average Velocity');
 xlabel('Position (in)');ylabel('Velocity (m/s)');
 
 % Calculate volumetric flow rates and std deviations from Vavg, VavgStdDev, and tubeArea
-Qtube = Vavg*tubeArea;
-QstdDev = VavgStdDev*tubeArea;
+Qtube = Vavg*tubeArea_m;
+QstdDev = VavgStdDev*tubeArea_m;
 
 % Calculate mass flow rate from Qtube, QstdDev, and density
 mdot = Qtube*rho;
@@ -110,3 +110,9 @@ for i = 1:length(Vmax_theoretical)
     Vmax_experimental(i) = mean([data.Vmax_data(2*i-1) data.Vmax_data(2*i)]);
     developmentPercent(i) = Vmax_experimental(i)/Vmax_theoretical(i);
 end
+
+% Display results in order they appear in report
+display(Vavg); display(VavgStdDev);
+display(Qtube); display(QstdDev);
+display(mdot); display(mdotStdDev);
+display(developmentPercent);

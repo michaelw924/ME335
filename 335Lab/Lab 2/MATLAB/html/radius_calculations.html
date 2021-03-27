@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>radius_calculations</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-03-14"><meta name="DC.source" content="radius_calculations.m"><style type="text/css">
+      --><title>radius_calculations</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-03-15"><meta name="DC.source" content="radius_calculations.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% Code by Michael White to calculate the measurement radii for Lab 2</span>
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% Code by Michael White to calculate the measurement radii and areas for Lab 2</span>
 clear;clc;
 
 <span class="comment">% Enter the diameter of the tube and number of equal areas</span>
@@ -75,10 +75,10 @@ tubeDiam = 6.065; <span class="comment">%inches</span>
 n = 5;
 
 <span class="comment">% Calculate total area of the tube</span>
-tubeArea = (pi/4)*(tubeDiam^2);
+tubeArea_in = (pi/4)*(tubeDiam^2);
 
 <span class="comment">% Find area for split regions</span>
-equal_area = tubeArea/n;
+equalArea_in = tubeArea_in/n;
 
 <span class="comment">% % Find the radii to produce equal area regions</span>
 <span class="keyword">for</span> i = 1:n
@@ -90,16 +90,48 @@ equal_area = tubeArea/n;
     p(i) = (tubeDiam/2)*sqrt(((2*i)-1)/(2*n));
 <span class="keyword">end</span>
 
+<span class="comment">% Convert equalArea and tubeArea to m^2</span>
+equalArea_m = equalArea_in*0.00064516;
+tubeArea_m = tubeArea_in*0.00064516;
+
 <span class="comment">% Display the results</span>
+display(r);
 display(p);
+display(tubeArea_in);display(equalArea_in);
+display(tubeArea_m);display(equalArea_m);
 </pre><pre class="codeoutput">
+r =
+
+    1.3562    1.9179    2.3490    2.7124    3.0325
+
+
 p =
 
     0.9590    1.6610    2.1443    2.5372    2.8769
 
+
+tubeArea_in =
+
+   28.8903
+
+
+equalArea_in =
+
+    5.7781
+
+
+tubeArea_m =
+
+    0.0186
+
+
+equalArea_m =
+
+    0.0037
+
 </pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-% Code by Michael White to calculate the measurement radii for Lab 2
+% Code by Michael White to calculate the measurement radii and areas for Lab 2
 clear;clc;
 
 % Enter the diameter of the tube and number of equal areas
@@ -107,10 +139,10 @@ tubeDiam = 6.065; %inches
 n = 5;
 
 % Calculate total area of the tube
-tubeArea = (pi/4)*(tubeDiam^2);
+tubeArea_in = (pi/4)*(tubeDiam^2);
 
 % Find area for split regions
-equal_area = tubeArea/n;
+equalArea_in = tubeArea_in/n;
 
 % % Find the radii to produce equal area regions
 for i = 1:n
@@ -122,7 +154,14 @@ for i = 1:n
     p(i) = (tubeDiam/2)*sqrt(((2*i)-1)/(2*n));
 end
 
+% Convert equalArea and tubeArea to m^2
+equalArea_m = equalArea_in*0.00064516;
+tubeArea_m = tubeArea_in*0.00064516;
+
 % Display the results
+display(r);
 display(p);
+display(tubeArea_in);display(equalArea_in);
+display(tubeArea_m);display(equalArea_m);
 ##### SOURCE END #####
 --></body></html>

@@ -30,6 +30,14 @@ stdT_K = std(rawT_K);
 rho = avgP_Pa/(R*avgT_K);
 rho_std = rho*sqrt((stdP_Pa/avgP_Pa)^2+(stdT_K/avgT_K)^2);
 
+% Display pressure values in PSI and Pa
+display(avgP_PSI);display(stdP_PSI);
+display(avgP_Pa);display(stdP_Pa);
+
+% Display temperature values in C and K
+display(avgT_C);display(stdT_C);
+display(avgT_K);display(stdT_K);
+
 % Display rho
 display(rho);
 display(rho_std);

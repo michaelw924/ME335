@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>baseVelocityCalculations</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-03-14"><meta name="DC.source" content="baseVelocityCalculations.m"><style type="text/css">
+      --><title>baseVelocityCalculations</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-03-15"><meta name="DC.source" content="baseVelocityCalculations.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -73,20 +73,15 @@ clear;clc;
 <span class="comment">% Enter mass flow rate values from</span>
 mdot_tube = [0.2557 0.2017 0.1508 0.1014];
 
-<span class="comment">% Enter the diameter of the tube and number of equal areas</span>
-tubeDiam = 6.065; <span class="comment">%inches</span>
-n = 5;
-
 <span class="comment">% Enter the calculated density and std dev of density</span>
 rho = 1.1222;
 rhoStdDev = 4.8250e-04;
 
 <span class="comment">% Calculate total area of the tube</span>
-tubeArea = (pi/4)*(tubeDiam^2);
-clear <span class="string">tubeDiam</span>;
+fanArea = 6^2;
 
 <span class="comment">% Convert area to m^2</span>
-tubeArea = tubeArea*0.00064516;
+fanArea = fanArea*0.00064516;
 
 <span class="comment">% Read in raw velocities (currently in MPH) and write averages and standard deviations</span>
 <span class="comment">% to individual vectors</span>
@@ -99,8 +94,8 @@ Vavg_mps = Vavg_MPH*0.44704;
 VstdDev_mps = VstdDev_MPH*0.44704;
 
 <span class="comment">% Calculate volumetric flow rates and std deviations from Vavg, VavgStdDev, and tubeArea</span>
-Q_fan = Vavg_mps*tubeArea;
-QstdDev_fan = VstdDev_mps*tubeArea;
+Q_fan = Vavg_mps*fanArea;
+QstdDev_fan = VstdDev_mps*fanArea;
 
 <span class="comment">% Calculate mass flow rate from Qtube, QstdDev, and density</span>
 mdot_fan = Q_fan*rho;
@@ -110,6 +105,58 @@ mdotStdDev_fan = mdot_fan*sqrt((QstdDev_fan/Q_fan)^2+(rhoStdDev/rho)^2);
 <span class="keyword">for</span> i = 1:length(mdot_fan)
     percentError(i) = (mdot_tube(i)/mdot_fan(i))-1;
 <span class="keyword">end</span>
+
+<span class="comment">% Display results as they appear in the report</span>
+display(Vavg_MPH);display(VstdDev_MPH);
+display(Vavg_mps);display(VstdDev_mps);
+display(Q_fan);display(QstdDev_fan);
+display(mdot_fan);display(mdotStdDev_fan);
+display(percentError);
+</pre><pre class="codeoutput">
+Vavg_MPH =
+
+   25.2955   20.1758   15.4960   10.8583
+
+
+VstdDev_MPH =
+
+    0.1447    0.0995    0.0868    0.0798
+
+
+Vavg_mps =
+
+   11.3081    9.0194    6.9273    4.8541
+
+
+VstdDev_mps =
+
+    0.0647    0.0445    0.0388    0.0357
+
+
+Q_fan =
+
+    0.2626    0.2095    0.1609    0.1127
+
+
+QstdDev_fan =
+
+    0.0015    0.0010    0.0009    0.0008
+
+
+mdot_fan =
+
+    0.2947    0.2351    0.1806    0.1265
+
+
+mdotStdDev_fan =
+
+    0.0017    0.0013    0.0010    0.0007
+
+
+percentError =
+
+   -0.1324   -0.1420   -0.1648   -0.1985
+
 </pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 % Code by Michael White to calculate the base velocity characteristics for ME 335L Lab Report 2
@@ -118,20 +165,15 @@ clear;clc;
 % Enter mass flow rate values from 
 mdot_tube = [0.2557 0.2017 0.1508 0.1014];
 
-% Enter the diameter of the tube and number of equal areas
-tubeDiam = 6.065; %inches
-n = 5;
-
 % Enter the calculated density and std dev of density
 rho = 1.1222;
 rhoStdDev = 4.8250e-04;
 
 % Calculate total area of the tube
-tubeArea = (pi/4)*(tubeDiam^2);
-clear tubeDiam;
+fanArea = 6^2;
 
 % Convert area to m^2
-tubeArea = tubeArea*0.00064516;
+fanArea = fanArea*0.00064516;
 
 % Read in raw velocities (currently in MPH) and write averages and standard deviations
 % to individual vectors
@@ -144,8 +186,8 @@ Vavg_mps = Vavg_MPH*0.44704;
 VstdDev_mps = VstdDev_MPH*0.44704;
 
 % Calculate volumetric flow rates and std deviations from Vavg, VavgStdDev, and tubeArea
-Q_fan = Vavg_mps*tubeArea;
-QstdDev_fan = VstdDev_mps*tubeArea;
+Q_fan = Vavg_mps*fanArea;
+QstdDev_fan = VstdDev_mps*fanArea;
 
 % Calculate mass flow rate from Qtube, QstdDev, and density
 mdot_fan = Q_fan*rho;
@@ -155,5 +197,12 @@ mdotStdDev_fan = mdot_fan*sqrt((QstdDev_fan/Q_fan)^2+(rhoStdDev/rho)^2);
 for i = 1:length(mdot_fan)
     percentError(i) = (mdot_tube(i)/mdot_fan(i))-1;
 end
+
+% Display results as they appear in the report
+display(Vavg_MPH);display(VstdDev_MPH);
+display(Vavg_mps);display(VstdDev_mps);
+display(Q_fan);display(QstdDev_fan);
+display(mdot_fan);display(mdotStdDev_fan);
+display(percentError);
 ##### SOURCE END #####
 --></body></html>
