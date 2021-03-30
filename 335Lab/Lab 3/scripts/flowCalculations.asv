@@ -102,7 +102,7 @@ for i = 1:numel(rpmSettings)
         calcValues.avgFlowMeasured_m3s(i))*100;
 end
 
-% Generate table for all measured
+% Generate table for output of measured & calculated flows w/ % difference
 flowTable = table(char(rpmSettings), calcValues.avgFlowMeasured_m3s,...
     calcValues.avgFlowMeasured_m3s_sd, calcValues.avgFlowCalculated_m3s,...
     calcValues.avgFlowCalculated_m3s_sd, calcValues.percentError);
