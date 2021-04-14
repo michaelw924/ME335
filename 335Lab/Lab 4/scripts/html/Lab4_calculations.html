@@ -1,0 +1,326 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Calculations for Lab 4: Linear Momentum</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-04-14"><meta name="DC.source" content="Lab4_calculations.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Calculations for Lab 4: Linear Momentum</h1><p>This code written by Michael White</p><pre class="codeinput">clear; clc; close <span class="string">all</span>;
+
+<span class="comment">% Read in data averages from experimentation</span>
+dataTable = readtable(<span class="string">'rawDataAverages.xlsx'</span>);
+
+<span class="comment">% Setup initial known parameters</span>
+params.nozzleDiam_in = 0.53;
+params.plateMass_kg = 0.6028;
+params.height_in = 4.860;
+params.density_kgm3 = 997.83; <span class="comment">% Density of water @ 21.7 C</span>
+params.g = 9.81; <span class="comment">% m/s^2</span>
+
+<span class="comment">% Convert values to metric</span>
+params.nozzleDiam_m = params.nozzleDiam_in*0.0254;
+params.height_m = params.height_in*0.0254;
+dataTable.AvgF_transducer_N = dataTable.AvgF_transducer_lbf*4.4482216;
+dataTable.AvgF_transducer_N_std = dataTable.AvgF_transducer_lbf_std*4.4482216;
+
+<span class="comment">% Calculate additional parameters</span>
+params.plateWeight_low_N = 1.14*4.4482216;
+params.plateWeight_N = params.plateMass_kg*params.g;
+params.Area_m2 = pi/4*params.nozzleDiam_m^2;
+params.waterWeight_N = params.density_kgm3*params.Area_m2*<span class="keyword">...</span>
+    params.height_m*params.g;
+
+<span class="comment">% Generate flow in metric and find corresponding velocities</span>
+dataTable.AvgQ_m3s = dataTable.AvgQ_GPM * 6.31e-5;
+dataTable.AvgQ_m3s_std = dataTable.AvgQ_GPM_std * 6.31e-5;
+dataTable.AvgV_ms = dataTable.AvgQ_m3s/params.Area_m2;
+dataTable.AvgV_ms_std = dataTable.AvgQ_m3s_std/params.Area_m2;
+
+<span class="comment">% Identify the supposed force from calculation and the measured force</span>
+dataTable.calcWaterForce_N = (params.Area_m2*params.density_kgm3*(dataTable.AvgV_ms).^2)<span class="keyword">...</span>
+    -params.waterWeight_N;
+dataTable.calcWaterForce_N_std = (params.Area_m2*params.density_kgm3<span class="keyword">...</span>
+    *sqrt(2*(dataTable.AvgV_ms_std).^2));
+
+<span class="comment">% Identify the water force based on the plate weight and transducer reading</span>
+dataTable.readWaterForce_N = -1*(dataTable.AvgF_transducer_N-params.plateWeight_N);
+dataTable.readWaterForce_N_std = dataTable.AvgF_transducer_N_std;
+dataTable.readWaterForce_low_N = -1*(dataTable.AvgF_transducer_N-params.plateWeight_low_N);
+dataTable.readWaterForce_low_N_std = dataTable.AvgF_transducer_N_std;
+
+<span class="comment">% Calculate percent error between theoretical and adjusted read values</span>
+<span class="keyword">for</span> i = 1:length(dataTable.readWaterForce_N)
+    dataTable.percentError(i) = <span class="keyword">...</span>
+        abs(dataTable.readWaterForce_N(i)-dataTable.calcWaterForce_N(i))<span class="keyword">...</span>
+        /dataTable.readWaterForce_N(i);
+<span class="keyword">end</span>
+
+<span class="comment">% Separate data into specified flows</span>
+noFlows = dataTable([1,8],:);
+Flows = dataTable(2:6,:);
+zeroForceFlow = dataTable(7,:);
+
+<span class="comment">% Display tables in the order they appear in the report</span>
+disp(<span class="string">'The raw averages from experimental data:'</span>); display(Flows(:,1:4));
+disp(<span class="string">'The metric flow rates and fluid velocities:'</span>); display(Flows(:,7:10));
+disp(<span class="string">'Converted transducer forces:'</span>); display(Flows(:,5:6));
+disp(<span class="string">'Theoretical Forces and Adjusted Read Forces:'</span>); display(Flows(:,11:14));
+disp(<span class="string">'Theoretical - Read Forces Percent Error:'</span>); display(Flows(:,17));
+disp(<span class="string">'Zero Flow Readout Data:'</span>); display(noFlows(:,1:4));
+disp(<span class="string">'Adjusted Read Force Data Using Ending Transducer Reading:'</span>); display(Flows(:,15:16));
+
+<span class="comment">% Plot results without changed plate weight</span>
+figure;
+hold <span class="string">on</span>;
+set(gcf,<span class="string">'Position'</span>,get(0,<span class="string">'Screensize'</span>)); grid <span class="string">on</span>;
+plot(Flows.AvgQ_GPM,Flows.readWaterForce_N,<span class="string">'*-'</span>);
+plot(Flows.AvgQ_GPM,Flows.calcWaterForce_N,<span class="string">'*-'</span>);
+legend(<span class="string">'Force from Transducer'</span>,<span class="string">'Force from Flow'</span>,<span class="string">'Location'</span>,<span class="string">'Southeast'</span>);
+xlabel(<span class="string">'Flow Rate (GPM)'</span>); ylabel(<span class="string">'Force at Plate (N)'</span>);
+title(<span class="string">'Theoretical and Adjusted Read Force at Plate (N) vs. Flow Rate (GPM)'</span>);
+
+<span class="comment">% Plot results with changed plate weight</span>
+figure;
+hold <span class="string">on</span>;
+set(gcf,<span class="string">'Position'</span>,get(0,<span class="string">'Screensize'</span>)); grid <span class="string">on</span>;
+plot(Flows.AvgQ_GPM,Flows.readWaterForce_N,<span class="string">'*-'</span>);
+plot(Flows.AvgQ_GPM,Flows.calcWaterForce_N,<span class="string">'*-'</span>);
+plot(Flows.AvgQ_GPM,Flows.readWaterForce_low_N,<span class="string">'*-'</span>);
+legend(<span class="string">'Force from Transducer'</span>,<span class="string">'Force from Flow'</span>,<span class="keyword">...</span>
+    <span class="string">'Force from Transducer with Lower Plate Weight'</span>,<span class="string">'Location'</span>,<span class="string">'Southeast'</span>);
+xlabel(<span class="string">'Flow Rate (GPM)'</span>); ylabel(<span class="string">'Force at Plate (N)'</span>);
+title(<span class="string">'Adjusted Read Data with Different Plate Weight (N) vs. Flow Rate (GPM)'</span>);
+</pre><pre class="codeoutput">The raw averages from experimental data:
+  5&times;4 table
+
+    AvgQ_GPM    AvgQ_GPM_std    AvgF_transducer_lbf    AvgF_transducer_lbf_std
+    ________    ____________    ___________________    _______________________
+
+      3.056        0.01075              1.11                 2.3406e-16       
+      6.079       0.014491             0.976                   0.005164       
+      9.061        0.01792             0.666                   0.005164       
+     12.099       0.026854             0.195                  0.0052705       
+     15.156       0.020656            -0.155                  0.0052705       
+
+The metric flow rates and fluid velocities:
+  5&times;4 table
+
+     AvgQ_m3s     AvgQ_m3s_std    AvgV_ms    AvgV_ms_std
+    __________    ____________    _______    ___________
+
+    0.00019283      6.783e-07     1.3548      0.0047656 
+    0.00038358     9.1441e-07      2.695      0.0064244 
+    0.00057175     1.1307e-06      4.017      0.0079442 
+    0.00076345     1.6945e-06     5.3638       0.011905 
+    0.00095634     1.3034e-06      6.719      0.0091572 
+
+Converted transducer forces:
+  5&times;2 table
+
+    AvgF_transducer_N    AvgF_transducer_N_std
+    _________________    _____________________
+
+          4.9375              1.0411e-15      
+          4.3415                0.022971      
+          2.9625                0.022971      
+          0.8674                0.023444      
+        -0.68947                0.023444      
+
+Theoretical Forces and Adjusted Read Forces:
+  5&times;4 table
+
+    calcWaterForce_N    calcWaterForce_N_std    readWaterForce_N    readWaterForce_N_std
+    ________________    ____________________    ________________    ____________________
+
+        0.088693             0.00095719             0.97594              1.0411e-15     
+         0.85951              0.0012904               1.572                0.022971     
+          2.1197              0.0015956               2.951                0.022971     
+          3.9141              0.0023911              5.0461                0.023444     
+          6.2397              0.0018393              6.6029                0.023444     
+
+Theoretical - Read Forces Percent Error:
+  5&times;1 table
+
+    percentError
+    ____________
+
+       0.90912  
+       0.45324  
+       0.28169  
+       0.22433  
+      0.055006  
+
+Zero Flow Readout Data:
+  2&times;4 table
+
+    AvgQ_GPM    AvgQ_GPM_std    AvgF_transducer_lbf    AvgF_transducer_lbf_std
+    ________    ____________    ___________________    _______________________
+
+     0.005       0.0070711             1.33                           0       
+     0.002        0.010328             1.14                  2.3406e-16       
+
+Adjusted Read Force Data Using Ending Transducer Reading:
+  5&times;2 table
+
+    readWaterForce_low_N    readWaterForce_low_N_std
+    ____________________    ________________________
+
+          0.13345                  1.0411e-15       
+          0.72951                    0.022971       
+           2.1085                    0.022971       
+           4.2036                    0.023444       
+           5.7604                    0.023444       
+
+</pre><img vspace="5" hspace="5" src="Lab4_calculations_01.png" alt=""> <img vspace="5" hspace="5" src="Lab4_calculations_02.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Calculations for Lab 4: Linear Momentum
+% This code written by Michael White
+clear; clc; close all;
+
+% Read in data averages from experimentation
+dataTable = readtable('rawDataAverages.xlsx');
+
+% Setup initial known parameters
+params.nozzleDiam_in = 0.53;
+params.plateMass_kg = 0.6028;
+params.height_in = 4.860;
+params.density_kgm3 = 997.83; % Density of water @ 21.7 C
+params.g = 9.81; % m/s^2
+
+% Convert values to metric
+params.nozzleDiam_m = params.nozzleDiam_in*0.0254;
+params.height_m = params.height_in*0.0254;
+dataTable.AvgF_transducer_N = dataTable.AvgF_transducer_lbf*4.4482216;
+dataTable.AvgF_transducer_N_std = dataTable.AvgF_transducer_lbf_std*4.4482216;
+
+% Calculate additional parameters
+params.plateWeight_low_N = 1.14*4.4482216;
+params.plateWeight_N = params.plateMass_kg*params.g;
+params.Area_m2 = pi/4*params.nozzleDiam_m^2;
+params.waterWeight_N = params.density_kgm3*params.Area_m2*...
+    params.height_m*params.g;
+
+% Generate flow in metric and find corresponding velocities
+dataTable.AvgQ_m3s = dataTable.AvgQ_GPM * 6.31e-5;
+dataTable.AvgQ_m3s_std = dataTable.AvgQ_GPM_std * 6.31e-5;
+dataTable.AvgV_ms = dataTable.AvgQ_m3s/params.Area_m2;
+dataTable.AvgV_ms_std = dataTable.AvgQ_m3s_std/params.Area_m2;
+
+% Identify the supposed force from calculation and the measured force
+dataTable.calcWaterForce_N = (params.Area_m2*params.density_kgm3*(dataTable.AvgV_ms).^2)...
+    -params.waterWeight_N;
+dataTable.calcWaterForce_N_std = (params.Area_m2*params.density_kgm3...
+    *sqrt(2*(dataTable.AvgV_ms_std).^2));
+
+% Identify the water force based on the plate weight and transducer reading
+dataTable.readWaterForce_N = -1*(dataTable.AvgF_transducer_N-params.plateWeight_N);
+dataTable.readWaterForce_N_std = dataTable.AvgF_transducer_N_std;
+dataTable.readWaterForce_low_N = -1*(dataTable.AvgF_transducer_N-params.plateWeight_low_N);
+dataTable.readWaterForce_low_N_std = dataTable.AvgF_transducer_N_std;
+
+% Calculate percent error between theoretical and adjusted read values
+for i = 1:length(dataTable.readWaterForce_N)
+    dataTable.percentError(i) = ...
+        abs(dataTable.readWaterForce_N(i)-dataTable.calcWaterForce_N(i))...
+        /dataTable.readWaterForce_N(i);
+end
+
+% Separate data into specified flows
+noFlows = dataTable([1,8],:);
+Flows = dataTable(2:6,:);
+zeroForceFlow = dataTable(7,:);
+
+% Display tables in the order they appear in the report
+disp('The raw averages from experimental data:'); display(Flows(:,1:4));
+disp('The metric flow rates and fluid velocities:'); display(Flows(:,7:10));
+disp('Converted transducer forces:'); display(Flows(:,5:6));
+disp('Theoretical Forces and Adjusted Read Forces:'); display(Flows(:,11:14));
+disp('Theoretical - Read Forces Percent Error:'); display(Flows(:,17));
+disp('Zero Flow Readout Data:'); display(noFlows(:,1:4));
+disp('Adjusted Read Force Data Using Ending Transducer Reading:'); display(Flows(:,15:16));
+
+% Plot results without changed plate weight
+figure;
+hold on;
+set(gcf,'Position',get(0,'Screensize')); grid on;
+plot(Flows.AvgQ_GPM,Flows.readWaterForce_N,'*-');
+plot(Flows.AvgQ_GPM,Flows.calcWaterForce_N,'*-');
+legend('Force from Transducer','Force from Flow','Location','Southeast');
+xlabel('Flow Rate (GPM)'); ylabel('Force at Plate (N)');
+title('Theoretical and Adjusted Read Force at Plate (N) vs. Flow Rate (GPM)');
+
+% Plot results with changed plate weight
+figure;
+hold on;
+set(gcf,'Position',get(0,'Screensize')); grid on;
+plot(Flows.AvgQ_GPM,Flows.readWaterForce_N,'*-');
+plot(Flows.AvgQ_GPM,Flows.calcWaterForce_N,'*-');
+plot(Flows.AvgQ_GPM,Flows.readWaterForce_low_N,'*-');
+legend('Force from Transducer','Force from Flow',...
+    'Force from Transducer with Lower Plate Weight','Location','Southeast');
+xlabel('Flow Rate (GPM)'); ylabel('Force at Plate (N)');
+title('Adjusted Read Data with Different Plate Weight (N) vs. Flow Rate (GPM)');
+##### SOURCE END #####
+--></body></html>
