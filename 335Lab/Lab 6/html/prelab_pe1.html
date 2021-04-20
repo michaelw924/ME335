@@ -1,0 +1,242 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Work for Pre-Lab 6: Problem PE1</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-04-20"><meta name="DC.source" content="prelab_pe1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Work for Pre-Lab 6: Problem PE1</h1><p>This code written by Michael White, 4/19/2021</p><pre class="codeinput">clear;clc;
+
+<span class="comment">% Input values from problem statement</span>
+p1 = 96.5; <span class="comment">%kPa</span>
+Q = 77.9; <span class="comment">%GPM</span>
+d1 = 3; <span class="comment">%in</span>
+wp = 3000; <span class="comment">%rpm</span>
+T = 0.7; <span class="comment">%ft-lbf</span>
+p2 = 123.2; <span class="comment">%kPa</span>
+z_diff = 5.52; <span class="comment">%ft -this equates to z2-z1</span>
+d2 = 2; <span class="comment">%in</span>
+rho = 997.3; <span class="comment">%kg/m3</span>
+g = 9.81; <span class="comment">%m/s2</span>
+
+<span class="comment">% Convert values to metric units</span>
+p1 = p1*1000; <span class="comment">%Pa</span>
+d1 = d1*0.0254; <span class="comment">%m</span>
+wp = wp*2*pi/60; <span class="comment">%radians/sec</span>
+T = T*1.35582; <span class="comment">%N*m</span>
+p2 = p2*1000; <span class="comment">%Pa</span>
+Q = Q/15850.323141; <span class="comment">%m3/s</span>
+z_diff = z_diff*0.3048; <span class="comment">%m</span>
+d2 = d2*0.0254; <span class="comment">%m</span>
+
+<span class="comment">% Calculate mass flow</span>
+mdot = Q*rho; <span class="comment">%kg/s</span>
+
+<span class="comment">% Calculate areas</span>
+A1 = pi/4*d1^2; <span class="comment">%m2</span>
+A2 = pi/4*d2^2; <span class="comment">%m2</span>
+
+<span class="comment">% Calculate velocities</span>
+V1 = Q/A1; <span class="comment">%m/s</span>
+V2 = Q/A2; <span class="comment">%m/s</span>
+
+<span class="comment">% Calculate the actual shaft work, in watts and hp</span>
+W_actual = T*wp; <span class="comment">%Watts</span>
+W_actual_hp = W_actual*0.001341022; <span class="comment">%hp</span>
+
+<span class="comment">% Calculate the pressure head</span>
+ph = (p2-p1)/(rho*g); <span class="comment">%m</span>
+
+<span class="comment">% Calculate the velocity head</span>
+vh = (V2^2-V1^2)/(2*g); <span class="comment">%m</span>
+
+<span class="comment">% Calculate the elevation head</span>
+eh = z_diff; <span class="comment">%m</span>
+
+<span class="comment">% Calculate the ideal shaft work, in watts and hp</span>
+W_ideal = mdot*g*(ph+vh+eh); <span class="comment">%Watts</span>
+W_ideal_hp = W_ideal*0.001341022; <span class="comment">%hp</span>
+
+<span class="comment">% Calculate the input heads for actual and ideal work</span>
+Wh_ideal = W_ideal/(mdot*g); <span class="comment">%m</span>
+Wh_actual = W_actual/(mdot*g); <span class="comment">%m</span>
+
+<span class="comment">% Calculate head loss (taking as positive value)</span>
+h_loss = abs(Wh_ideal-Wh_actual); <span class="comment">%m</span>
+
+<span class="comment">% Calculate the pump efficiency</span>
+n = W_ideal/W_actual*100; <span class="comment">%percentage</span>
+n = strcat(num2str(n),<span class="string">'%'</span>);
+
+<span class="comment">% Display results in order requested on problem</span>
+disp(<span class="string">'The actual work (in hp):'</span>); disp(W_actual_hp);
+disp(<span class="string">'The pressure head (in m):'</span>); disp(ph);
+disp(<span class="string">'The velocity head (in m):'</span>); disp(vh);
+disp(<span class="string">'The elevation head (in m):'</span>); disp(eh);
+disp(<span class="string">'The ideal shaft work input head (in m):'</span>); disp(Wh_ideal);
+disp(<span class="string">'The actual shaft work input head (in m):'</span>); disp(Wh_actual);
+disp(<span class="string">'The head loss (in m):'</span>); disp(h_loss);
+disp(<span class="string">'The pump efficiency:'</span>); disp(strcat(<span class="string">"    "</span>,n));
+</pre><pre class="codeoutput">The actual work (in hp):
+    0.3998
+
+The pressure head (in m):
+    2.7291
+
+The velocity head (in m):
+    0.2405
+
+The elevation head (in m):
+    1.6825
+
+The ideal shaft work input head (in m):
+    4.6521
+
+The actual shaft work input head (in m):
+    6.2009
+
+The head loss (in m):
+    1.5489
+
+The pump efficiency:
+    75.0222%
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Work for Pre-Lab 6: Problem PE1
+% This code written by Michael White, 4/19/2021
+clear;clc;
+
+% Input values from problem statement
+p1 = 96.5; %kPa
+Q = 77.9; %GPM
+d1 = 3; %in
+wp = 3000; %rpm
+T = 0.7; %ft-lbf
+p2 = 123.2; %kPa
+z_diff = 5.52; %ft -this equates to z2-z1
+d2 = 2; %in
+rho = 997.3; %kg/m3
+g = 9.81; %m/s2
+
+% Convert values to metric units
+p1 = p1*1000; %Pa
+d1 = d1*0.0254; %m
+wp = wp*2*pi/60; %radians/sec
+T = T*1.35582; %N*m
+p2 = p2*1000; %Pa
+Q = Q/15850.323141; %m3/s
+z_diff = z_diff*0.3048; %m
+d2 = d2*0.0254; %m
+
+% Calculate mass flow
+mdot = Q*rho; %kg/s
+
+% Calculate areas
+A1 = pi/4*d1^2; %m2
+A2 = pi/4*d2^2; %m2
+
+% Calculate velocities
+V1 = Q/A1; %m/s
+V2 = Q/A2; %m/s
+
+% Calculate the actual shaft work, in watts and hp
+W_actual = T*wp; %Watts
+W_actual_hp = W_actual*0.001341022; %hp
+
+% Calculate the pressure head
+ph = (p2-p1)/(rho*g); %m
+
+% Calculate the velocity head
+vh = (V2^2-V1^2)/(2*g); %m
+
+% Calculate the elevation head
+eh = z_diff; %m
+
+% Calculate the ideal shaft work, in watts and hp
+W_ideal = mdot*g*(ph+vh+eh); %Watts
+W_ideal_hp = W_ideal*0.001341022; %hp
+
+% Calculate the input heads for actual and ideal work
+Wh_ideal = W_ideal/(mdot*g); %m
+Wh_actual = W_actual/(mdot*g); %m
+
+% Calculate head loss (taking as positive value)
+h_loss = abs(Wh_ideal-Wh_actual); %m
+
+% Calculate the pump efficiency
+n = W_ideal/W_actual*100; %percentage
+n = strcat(num2str(n),'%');
+
+% Display results in order requested on problem
+disp('The actual work (in hp):'); disp(W_actual_hp);
+disp('The pressure head (in m):'); disp(ph);
+disp('The velocity head (in m):'); disp(vh);
+disp('The elevation head (in m):'); disp(eh);
+disp('The ideal shaft work input head (in m):'); disp(Wh_ideal);
+disp('The actual shaft work input head (in m):'); disp(Wh_actual);
+disp('The head loss (in m):'); disp(h_loss);
+disp('The pump efficiency:'); disp(strcat("    ",n));
+##### SOURCE END #####
+--></body></html>
