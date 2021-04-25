@@ -112,3 +112,25 @@ grid on;
 xlabel('Flow (GPM)');
 ylabel('Motor Setting (RPM)');
 zlabel('Efficiency (%)');
+
+%% Show Tables in Report Order
+% Show raw data from motor
+disp('Raw Motor Data @ 3500 RPM:'); disp(rawData.RPM_3500);
+disp('Raw Motor Data @ 3000 RPM:'); disp(rawData.RPM_3000);
+disp('Raw Motor Data @ 2500 RPM:'); disp(rawData.RPM_2500);
+disp('Raw Motor Data @ 2000 RPM:'); disp(rawData.RPM_2000);
+disp('Raw Motor Data @ 1500 RPM:'); disp(rawData.RPM_1500);
+
+% Show converted raw data from motor
+disp('Converted Data @ 3500 RPM:'); disp(data.RPM_3500);
+disp('Converted Data @ 3000 RPM:'); disp(data.RPM_3000);
+disp('Converted Data @ 2500 RPM:'); disp(data.RPM_2500);
+disp('Converted Data @ 2000 RPM:'); disp(data.RPM_2000);
+disp('Converted Data @ 1500 RPM:'); disp(data.RPM_1500);
+
+% Show converted raw data from motor
+disp('Converted Data @ 3500 RPM:'); disp(data.RPM_3500);
+disp('Converted Data @ 3000 RPM:'); disp(data.RPM_3000);
+disp('Converted Data @ 2500 RPM:'); disp(data.RPM_2500);
+disp('Converted Data @ 2000 RPM:'); disp(data.RPM_2000);
+disp('Converted Data @ 1500 RPM:'); disp(data.RPM_1500);
