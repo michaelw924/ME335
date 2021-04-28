@@ -1,0 +1,264 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>calculationsLab7</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-04-26"><meta name="DC.source" content="calculationsLab7.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% Pre-Lab "Written Out" Question: LD2</span>
+<span class="comment">% This code by Michael White</span>
+clear; clc;
+
+<span class="comment">% Setup parameters from temp = 25 C and initial velocity</span>
+density_kgm3 = 1.184; <span class="comment">%kg/m3</span>
+dynVisc_kgms = 1.849e-5; <span class="comment">%kg/m*s</span>
+velocity_ms = 40; <span class="comment">%m/s</span>
+
+<span class="comment">% Enter different diameters</span>
+bigDiam_in = 3.10; <span class="comment">%in</span>
+smallDiam_in = 1.55; <span class="comment">%in</span>
+
+<span class="comment">% Convert diameters to meters</span>
+bigDiam_m = 0.0254*bigDiam_in;
+smallDiam_m = 0.0254*smallDiam_in;
+
+<span class="comment">% Part 1: Hollow Hemisphere - Flat Face Forward</span>
+<span class="comment">% Calculate area and drag coefficient from Figure 3</span>
+part1.area_m2 = pi/4*bigDiam_m^2;
+part1.dragCoeff = 1.42;
+
+<span class="comment">% Calculate drag force</span>
+part1.dragForce_N = part1.dragCoeff*0.5*density_kgm3*velocity_ms^2*part1.area_m2;
+
+<span class="comment">% Display results</span>
+disp(<span class="string">'1. The Drag Force (N) for a Hollow Hemisphere - Flat Face Forward:'</span>);
+disp(part1.dragForce_N);
+
+<span class="comment">% Part 2: Hollow Hemisphere - Curved Face Forward</span>
+<span class="comment">% Calculate area and drag coefficient from Figure 3</span>
+part2.area_m2 = pi/4*bigDiam_m^2;
+part2.dragCoeff = 0.38;
+
+<span class="comment">% Calculate drag force</span>
+part2.dragForce_N = part2.dragCoeff*0.5*density_kgm3*velocity_ms^2*part2.area_m2;
+
+<span class="comment">% Display results</span>
+disp(<span class="string">'2. The Drag Force (N) for a Hollow Hemisphere - Curved Face Forward:'</span>);
+disp(part2.dragForce_N);
+
+<span class="comment">% Part 3: Smooth Sphere - Big Diameter (3.10 inch)</span>
+<span class="comment">% Calculate area and Reynolds number</span>
+part3.area_m2 = pi/4*bigDiam_m^2;
+part3.reynolds = density_kgm3*velocity_ms*bigDiam_m/dynVisc_kgms;
+
+<span class="comment">% Determine drag coefficient from Reynolds number of 2.0168e5 and Figure 5</span>
+part3.dragCoeff = 0.52;
+
+<span class="comment">% Calculate drag force</span>
+part3.dragForce_N = part3.dragCoeff*0.5*density_kgm3*velocity_ms^2*part3.area_m2;
+
+<span class="comment">% Display results</span>
+disp(<span class="string">'3. The Drag Force (N) for a Smooth Hemisphere - Big Diameter (3.10 inch):'</span>);
+disp(part3.dragForce_N);
+
+<span class="comment">% Part 4: Smooth Sphere - Small Diameter (1.55 inch)</span>
+<span class="comment">% Calculate area and Reynolds number</span>
+part4.area_m2 = pi/4*smallDiam_m^2;
+part4.reynolds = density_kgm3*velocity_ms*smallDiam_m/dynVisc_kgms;
+
+<span class="comment">% Determine drag coefficient from Reynolds number of 1.0084e5 and Figure 5</span>
+part4.dragCoeff = 0.51;
+
+<span class="comment">% Calculate drag force</span>
+part4.dragForce_N = part4.dragCoeff*0.5*density_kgm3*velocity_ms^2*part4.area_m2;
+
+<span class="comment">% Display results</span>
+disp(<span class="string">'4. The Drag Force (N) for a Smooth Sphere - Small Diameter (1.55 inch):'</span>);
+disp(part4.dragForce_N);
+
+<span class="comment">% Part 5: Golf Ball - Big Diameter (3.10 inch)</span>
+<span class="comment">% Calculate area and Reynolds number - this is a big golf ball :)</span>
+part5.area_m2 = pi/4*bigDiam_m^2;
+part5.reynolds = density_kgm3*velocity_ms*bigDiam_m/dynVisc_kgms;
+
+<span class="comment">% Determine drag coefficient from Reynolds number of 1.0084e5 and Figure 5</span>
+part5.dragCoeff = 0.24;
+
+<span class="comment">% Calculate drag force</span>
+part5.dragForce_N = part5.dragCoeff*0.5*density_kgm3*velocity_ms^2*part5.area_m2;
+
+<span class="comment">% Display results</span>
+disp(<span class="string">'5. The Drag Force (N) for a Golf Ball (3.10 inch):'</span>);
+disp(part5.dragForce_N);
+
+<span class="comment">% Display marked Figure 5 for reynolds numbers</span>
+imshow(<span class="string">'PreLab-Figure5.JPG'</span>);
+</pre><pre class="codeoutput">1. The Drag Force (N) for a Hollow Hemisphere - Flat Face Forward:
+    6.5495
+
+2. The Drag Force (N) for a Hollow Hemisphere - Curved Face Forward:
+    1.7527
+
+3. The Drag Force (N) for a Smooth Hemisphere - Big Diameter (3.10 inch):
+    2.3984
+
+4. The Drag Force (N) for a Smooth Sphere - Small Diameter (1.55 inch):
+    0.5881
+
+5. The Drag Force (N) for a Golf Ball (3.10 inch):
+    1.1070
+
+</pre><img vspace="5" hspace="5" src="calculationsLab7_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Pre-Lab "Written Out" Question: LD2 
+% This code by Michael White
+clear; clc;
+
+% Setup parameters from temp = 25 C and initial velocity
+density_kgm3 = 1.184; %kg/m3
+dynVisc_kgms = 1.849e-5; %kg/m*s
+velocity_ms = 40; %m/s
+
+% Enter different diameters
+bigDiam_in = 3.10; %in
+smallDiam_in = 1.55; %in
+
+% Convert diameters to meters
+bigDiam_m = 0.0254*bigDiam_in; 
+smallDiam_m = 0.0254*smallDiam_in;
+
+% Part 1: Hollow Hemisphere - Flat Face Forward
+% Calculate area and drag coefficient from Figure 3
+part1.area_m2 = pi/4*bigDiam_m^2;
+part1.dragCoeff = 1.42;
+
+% Calculate drag force
+part1.dragForce_N = part1.dragCoeff*0.5*density_kgm3*velocity_ms^2*part1.area_m2;
+
+% Display results
+disp('1. The Drag Force (N) for a Hollow Hemisphere - Flat Face Forward:');
+disp(part1.dragForce_N);
+
+% Part 2: Hollow Hemisphere - Curved Face Forward
+% Calculate area and drag coefficient from Figure 3
+part2.area_m2 = pi/4*bigDiam_m^2;
+part2.dragCoeff = 0.38;
+
+% Calculate drag force
+part2.dragForce_N = part2.dragCoeff*0.5*density_kgm3*velocity_ms^2*part2.area_m2;
+
+% Display results
+disp('2. The Drag Force (N) for a Hollow Hemisphere - Curved Face Forward:');
+disp(part2.dragForce_N);
+
+% Part 3: Smooth Sphere - Big Diameter (3.10 inch)
+% Calculate area and Reynolds number
+part3.area_m2 = pi/4*bigDiam_m^2;
+part3.reynolds = density_kgm3*velocity_ms*bigDiam_m/dynVisc_kgms; 
+
+% Determine drag coefficient from Reynolds number of 2.0168e5 and Figure 5
+part3.dragCoeff = 0.52;
+
+% Calculate drag force
+part3.dragForce_N = part3.dragCoeff*0.5*density_kgm3*velocity_ms^2*part3.area_m2;
+
+% Display results
+disp('3. The Drag Force (N) for a Smooth Hemisphere - Big Diameter (3.10 inch):');
+disp(part3.dragForce_N);
+
+% Part 4: Smooth Sphere - Small Diameter (1.55 inch)
+% Calculate area and Reynolds number
+part4.area_m2 = pi/4*smallDiam_m^2;
+part4.reynolds = density_kgm3*velocity_ms*smallDiam_m/dynVisc_kgms; 
+
+% Determine drag coefficient from Reynolds number of 1.0084e5 and Figure 5
+part4.dragCoeff = 0.51;
+
+% Calculate drag force
+part4.dragForce_N = part4.dragCoeff*0.5*density_kgm3*velocity_ms^2*part4.area_m2;
+
+% Display results
+disp('4. The Drag Force (N) for a Smooth Sphere - Small Diameter (1.55 inch):');
+disp(part4.dragForce_N);
+
+% Part 5: Golf Ball - Big Diameter (3.10 inch)
+% Calculate area and Reynolds number - this is a big golf ball :)
+part5.area_m2 = pi/4*bigDiam_m^2;
+part5.reynolds = density_kgm3*velocity_ms*bigDiam_m/dynVisc_kgms; 
+
+% Determine drag coefficient from Reynolds number of 1.0084e5 and Figure 5
+part5.dragCoeff = 0.24;
+
+% Calculate drag force
+part5.dragForce_N = part5.dragCoeff*0.5*density_kgm3*velocity_ms^2*part5.area_m2;
+
+% Display results
+disp('5. The Drag Force (N) for a Golf Ball (3.10 inch):');
+disp(part5.dragForce_N);
+
+% Display marked Figure 5 for reynolds numbers
+imshow('PreLab-Figure5.JPG');
+##### SOURCE END #####
+--></body></html>

@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>efficiencyCalculations</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-04-24"><meta name="DC.source" content="efficiencyCalculations.m"><style type="text/css">
+      --><title>Work for Lab 6: Pump Efficieny</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-04-27"><meta name="DC.source" content="efficiencyCalculations.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,14 +67,14 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Work for Lab 6: Pump Efficieny</a></li><li><a href="#2">Calculations using imported data</a></li><li><a href="#3">Post-Processing: Generating figures</a></li></ul></div><h2 id="1">Work for Lab 6: Pump Efficieny</h2><p>This code written by Michael White, 4/21/2021</p><pre class="codeinput">clear; clc; close <span class="string">all</span>;
+  </style></head><body><div class="content"><h1>Work for Lab 6: Pump Efficieny</h1><p>This code written by Michael White, 4/21/2021</p><pre class="codeinput">clear; clc; close <span class="string">all</span>;
 
 <span class="comment">% Read in data from lab</span>
-rawData.RPM_3500 = readtable(<span class="string">'data3500.xlsx'</span>);
-rawData.RPM_3000 = readtable(<span class="string">'data3000.xlsx'</span>);
-rawData.RPM_2500 = readtable(<span class="string">'data2500.xlsx'</span>);
-rawData.RPM_2000 = readtable(<span class="string">'data2000.xlsx'</span>);
-rawData.RPM_1500 = readtable(<span class="string">'data1500.xlsx'</span>);
+data.RPM_3500 = readtable(<span class="string">'data3500.xlsx'</span>);
+data.RPM_3000 = readtable(<span class="string">'data3000.xlsx'</span>);
+data.RPM_2500 = readtable(<span class="string">'data2500.xlsx'</span>);
+data.RPM_2000 = readtable(<span class="string">'data2000.xlsx'</span>);
+data.RPM_1500 = readtable(<span class="string">'data1500.xlsx'</span>);
 
 <span class="comment">% Generate cell list for referencing data names</span>
 rpmList = {<span class="string">'RPM_3500'</span>,<span class="string">'RPM_3000'</span>,<span class="string">'RPM_2500'</span>,<span class="string">'RPM_2000'</span>,<span class="string">'RPM_1500'</span>};
@@ -83,16 +83,19 @@ rpmList = {<span class="string">'RPM_3500'</span>,<span class="string">'RPM_3000
 params.rho = 997.83; <span class="comment">%kg/m3</span>
 params.g = 9.81; <span class="comment">%m/s2</span>
 params.heightDiff_in = 3.75; <span class="comment">%in</span>
-</pre><h2 id="2">Calculations using imported data</h2><p>Convert values to metric/angular velocity</p><pre class="codeinput">params.heightDiff_m = params.heightDiff_in*0.0254;
+
+<span class="comment">% - - - Calculations using imported data - - -</span>
+<span class="comment">% Convert values to metric/angular velocity</span>
+params.heightDiff_m = params.heightDiff_in*0.0254;
 <span class="keyword">for</span> i = 1:length(rpmList)
-    data.(char(rpmList(i))).motorActual_rad = rawData.(char(rpmList(i))).motorActual_RPM*2*pi/60;
-    data.(char(rpmList(i))).motorActual_SD_rad = rawData.(char(rpmList(i))).motorActual_SD_RPM*2*pi/60;
-    data.(char(rpmList(i))).deltaP_Pa_meas = rawData.(char(rpmList(i))).deltaP_inH20*249.088908;
-    data.(char(rpmList(i))).deltaP_SD_Pa_meas = rawData.(char(rpmList(i))).deltaP_SD_inH20*249.088908;
-    data.(char(rpmList(i))).flow_m3s = rawData.(char(rpmList(i))).flow_GPM/15850.323141;
-    data.(char(rpmList(i))).flow_SD_m3s = rawData.(char(rpmList(i))).flow_SD_GPM/15850.323141;
-    data.(char(rpmList(i))).torque_Nm = rawData.(char(rpmList(i))).torque_lbft*1.35582;
-    data.(char(rpmList(i))).torque_SD_Nm = rawData.(char(rpmList(i))).torque_SD_lbft*1.35582;
+    data.(char(rpmList(i))).motorActual_rad = data.(char(rpmList(i))).motorActual_RPM*2*pi/60;
+    data.(char(rpmList(i))).motorActual_SD_rad = data.(char(rpmList(i))).motorActual_SD_RPM*2*pi/60;
+    data.(char(rpmList(i))).deltaP_Pa_meas = data.(char(rpmList(i))).deltaP_inH20*249.088908;
+    data.(char(rpmList(i))).deltaP_SD_Pa_meas = data.(char(rpmList(i))).deltaP_SD_inH20*249.088908;
+    data.(char(rpmList(i))).flow_m3s = data.(char(rpmList(i))).flow_GPM/15850.323141;
+    data.(char(rpmList(i))).flow_SD_m3s = data.(char(rpmList(i))).flow_SD_GPM/15850.323141;
+    data.(char(rpmList(i))).torque_Nm = data.(char(rpmList(i))).torque_lbft*1.35582;
+    data.(char(rpmList(i))).torque_SD_Nm = data.(char(rpmList(i))).torque_SD_lbft*1.35582;
 <span class="keyword">end</span>
 
 <span class="comment">% Calculate hydrostatic</span>
@@ -119,45 +122,91 @@ params.heightDiffPress_Pa = params.rho*params.g*params.heightDiff_m;
 
 <span class="comment">% Find ideal work, actual work, and efficiency</span>
 <span class="keyword">for</span> i = 1:length(rpmList)
-    data.(char(rpmList(i))).workActual = data.(char(rpmList(i))).torque_Nm<span class="keyword">...</span>
+    data.(char(rpmList(i))).workActual_J = data.(char(rpmList(i))).torque_Nm<span class="keyword">...</span>
         .* data.(char(rpmList(i))).motorActual_rad;
-    data.(char(rpmList(i))).workIdeal = data.(char(rpmList(i))).massFlow_kgs*params.g<span class="keyword">...</span>
+    data.(char(rpmList(i))).workActual_SD_J = sqrt(data.(char(rpmList(i))).torque_SD_Nm.^2 <span class="keyword">...</span>
+        + data.(char(rpmList(i))).motorActual_SD_rad.^2);
+    data.(char(rpmList(i))).workIdeal_J = data.(char(rpmList(i))).massFlow_kgs*params.g<span class="keyword">...</span>
         .* data.(char(rpmList(i))).totalHead_m;
-    data.(char(rpmList(i))).efficiency = 100*data.(char(rpmList(i))).workIdeal<span class="keyword">...</span>
-        ./ data.(char(rpmList(i))).workActual;
+    data.(char(rpmList(i))).workIdeal_SD_J = params.g*sqrt(data.(char(rpmList(i))).massFlow_kgs.^2 <span class="keyword">...</span>
+        + data.(char(rpmList(i))).totalHead_m.^2);
+    data.(char(rpmList(i))).efficiency = 100*data.(char(rpmList(i))).workIdeal_J<span class="keyword">...</span>
+        ./ data.(char(rpmList(i))).workActual_J;
 <span class="keyword">end</span>
 
 <span class="comment">% Identify max efficiency in entire data set</span>
-maxCalc.flowList = [rawData.RPM_3500.flow_GPM',rawData.RPM_3000.flow_GPM',<span class="keyword">...</span>
-    rawData.RPM_2500.flow_GPM',rawData.RPM_2000.flow_GPM',rawData.RPM_1500.flow_GPM'];
-maxCalc.RPMList = [rawData.RPM_3500.motorActual_RPM',rawData.RPM_3000.motorActual_RPM',<span class="keyword">...</span>
-    rawData.RPM_2500.motorActual_RPM',rawData.RPM_2000.motorActual_RPM',rawData.RPM_1500.motorActual_RPM'];
+maxCalc.flowList = [data.RPM_3500.flow_GPM',data.RPM_3000.flow_GPM',<span class="keyword">...</span>
+    data.RPM_2500.flow_GPM',data.RPM_2000.flow_GPM',data.RPM_1500.flow_GPM'];
+maxCalc.RPMList = [data.RPM_3500.motorActual_RPM',data.RPM_3000.motorActual_RPM',<span class="keyword">...</span>
+    data.RPM_2500.motorActual_RPM',data.RPM_2000.motorActual_RPM',data.RPM_1500.motorActual_RPM'];
 maxCalc.effList = [data.RPM_3500.efficiency',data.RPM_3000.efficiency',<span class="keyword">...</span>
     data.RPM_2500.efficiency',data.RPM_2000.efficiency',data.RPM_1500.efficiency'];
 maxCalc.Point = [maxCalc.flowList(maxCalc.effList == max(maxCalc.effList)),<span class="keyword">...</span>
     maxCalc.RPMList(maxCalc.effList == max(maxCalc.effList)),max(maxCalc.effList)];
-</pre><h2 id="3">Post-Processing: Generating figures</h2><pre class="codeinput">figure;
+
+<span class="comment">% - - - Post-Processing: Generating figures and writing tables - - -</span>
+<span class="comment">% Write data to external excel file</span>
+<span class="keyword">for</span> i = 1:length(rpmList)
+    writetable(data.(char(rpmList(i))),strcat(<span class="string">'data/'</span>,char(rpmList(i)),<span class="string">'outputData.xlsx'</span>));
+<span class="keyword">end</span>
+
+<span class="comment">% Plot 2D figure - Pressure Head</span>
+figure; hold <span class="string">on</span>;
+<span class="keyword">for</span> i = 1:length(rpmList)
+    plot(<span class="keyword">...</span>
+        data.(char(rpmList(i))).flow_GPM,<span class="keyword">...</span>
+        data.(char(rpmList(i))).pressHead_m,<span class="keyword">...</span>
+        <span class="string">'LineWidth'</span>,2);
+<span class="keyword">end</span>
+title(<span class="string">'Pressure Head (m) vs. Flow (GPM)'</span>);
+xlabel(<span class="string">'Flow (GPM)'</span>);
+ylabel(<span class="string">'Pressure Head (m)'</span>);
+set(gcf,<span class="string">'Position'</span>,get(0,<span class="string">'Screensize'</span>)); grid <span class="string">on</span>;
+RPM_legend = legend(<span class="keyword">...</span>
+    {<span class="string">'motorRPM = 3500'</span>,<span class="string">'motorRPM = 3000'</span>,<span class="string">'motorRPM = 2500'</span>,<span class="keyword">...</span>
+    <span class="string">'motorRPM = 2000'</span>,<span class="string">'motorRPM = 1500'</span>});
+
+<span class="comment">% Plot 2D figure - Efficiency</span>
+figure; hold <span class="string">on</span>;
+<span class="keyword">for</span> i = 1:length(rpmList)
+    plot(<span class="keyword">...</span>
+        data.(char(rpmList(i))).flow_GPM,<span class="keyword">...</span>
+        data.(char(rpmList(i))).efficiency,<span class="keyword">...</span>
+        <span class="string">'LineWidth'</span>,2);
+<span class="keyword">end</span>
+title(<span class="string">'Efficiency vs. Flow (GPM)(%)'</span>);
+xlabel(<span class="string">'Flow (GPM)'</span>);
+ylabel(<span class="string">'Efficiency (%)'</span>);
+set(gcf,<span class="string">'Position'</span>,get(0,<span class="string">'Screensize'</span>)); grid <span class="string">on</span>;
+dataPlot.maxPoint = plot(maxCalc.Point(1),maxCalc.Point(3),<span class="keyword">...</span>
+    <span class="string">'r*'</span>,<span class="string">'MarkerSize'</span>,8,<span class="string">'LineWidth'</span>,2);
+RPM_legend = legend(<span class="keyword">...</span>
+    {<span class="string">'motorRPM = 3500'</span>,<span class="string">'motorRPM = 3000'</span>,<span class="string">'motorRPM = 2500'</span>,<span class="keyword">...</span>
+    <span class="string">'motorRPM = 2000'</span>,<span class="string">'motorRPM = 1500'</span>,<span class="string">'Max Efficiency'</span>},<span class="string">'Location'</span>,<span class="string">'southeast'</span>);
+
+<span class="comment">% Plot 3D figure</span>
+figure;
 <span class="comment">% Draw lines for each rpm</span>
 <span class="keyword">for</span> i = 1:length(rpmList)
     dataPlot.(char(rpmList(i))) = plot3(<span class="keyword">...</span>
-        rawData.(char(rpmList(i))).flow_GPM,<span class="keyword">...</span>
-        rawData.(char(rpmList(i))).motorActual_RPM,<span class="keyword">...</span>
+        data.(char(rpmList(i))).flow_GPM,<span class="keyword">...</span>
+        data.(char(rpmList(i))).motorActual_RPM,<span class="keyword">...</span>
         data.(char(rpmList(i))).efficiency,<span class="keyword">...</span>
         <span class="string">'LineWidth'</span>,2);
     hold <span class="string">on</span>;
 <span class="keyword">end</span>
-dataPlot.maxPoint = plot3(maxCalc.Point(1),maxCalc.Point(2),maxCalc.Point(3),<span class="keyword">...</span>
+dataPlot.maxPoint_3D = plot3(maxCalc.Point(1),maxCalc.Point(2),maxCalc.Point(3),<span class="keyword">...</span>
     <span class="string">'r*'</span>,<span class="string">'MarkerSize'</span>,8,<span class="string">'LineWidth'</span>,2);
-RPM_legend = legend(<span class="keyword">...</span>
+RPM_legend_3D = legend(<span class="keyword">...</span>
     <span class="string">'motorRPM = 3500'</span>,<span class="string">'motorRPM = 3000'</span>,<span class="string">'motorRPM = 2500'</span>,<span class="keyword">...</span>
     <span class="string">'motorRPM = 2000'</span>,<span class="string">'motorRPM = 1500'</span>,<span class="string">'Max Efficiency'</span>);
-RPM_legend.AutoUpdate = false;
+RPM_legend_3D.AutoUpdate = false;
 
 <span class="comment">% Create fill and mesh to add 3D shape</span>
 <span class="keyword">for</span> i = 1:length(rpmList)
     <span class="keyword">for</span> j = 1:length(rpmList)
-        xVect(j) = rawData.(char(rpmList(j))).flow_GPM(i);
-        yVect(j) = rawData.(char(rpmList(j))).motorActual_RPM(i);
+        xVect(j) = data.(char(rpmList(j))).flow_GPM(i);
+        yVect(j) = data.(char(rpmList(j))).motorActual_RPM(i);
         zVect(j) = data.(char(rpmList(j))).efficiency(i);
     <span class="keyword">end</span>
     plot3(xVect,yVect,zVect,<span class="string">'-k'</span>);
@@ -170,17 +219,54 @@ RPM_legend.AutoUpdate = false;
 <span class="keyword">end</span>
 
 <span class="comment">% Add cleaning features to 3D figure</span>
-grid <span class="string">on</span>;
+set(gcf,<span class="string">'Position'</span>,get(0,<span class="string">'Screensize'</span>)); grid <span class="string">on</span>;
+title(<span class="string">'3D Flow (GPM) vs. Efficiency (%)'</span>);
 xlabel(<span class="string">'Flow (GPM)'</span>);
 ylabel(<span class="string">'Motor Setting (RPM)'</span>);
 zlabel(<span class="string">'Efficiency (%)'</span>);
 
-<span class="comment">% Show tables as they appear in report</span>
-disp(<span class="string">'Raw Motor Data @ 3500 RPM:'</span>); disp(rawData.RPM_3500);
-disp(<span class="string">'Raw Motor Data @ 3000 RPM:'</span>); disp(rawData.RPM_3000);
-disp(<span class="string">'Raw Motor Data @ 2500 RPM:'</span>); disp(rawData.RPM_2500);
-disp(<span class="string">'Raw Motor Data @ 2000 RPM:'</span>); disp(rawData.RPM_2000);
-disp(<span class="string">'Raw Motor Data @ 1500 RPM:'</span>); disp(rawData.RPM_1500);
+<span class="comment">% - - - Show Tables in Report Order - - -</span>
+<span class="comment">% Generate vectors to access data</span>
+rawDataVect = [1,2:9];
+metricDataVect = [1,10:17];
+pressAndMassVect = [1,18:21];
+headVect = [1,22:27];
+workVect = [1,28:32];
+
+<span class="comment">% Show raw data from motor</span>
+disp(<span class="string">'Raw Motor Data @ 3500 RPM:'</span>); disp(data.RPM_3500(:,rawDataVect));
+disp(<span class="string">'Raw Motor Data @ 3000 RPM:'</span>); disp(data.RPM_3000(:,rawDataVect));
+disp(<span class="string">'Raw Motor Data @ 2500 RPM:'</span>); disp(data.RPM_2500(:,rawDataVect));
+disp(<span class="string">'Raw Motor Data @ 2000 RPM:'</span>); disp(data.RPM_2000(:,rawDataVect));
+disp(<span class="string">'Raw Motor Data @ 1500 RPM:'</span>); disp(data.RPM_1500(:,rawDataVect));
+
+<span class="comment">% Show converted raw data from motor</span>
+disp(<span class="string">'Converted Data @ 3500 RPM:'</span>); disp(data.RPM_3500(:,metricDataVect));
+disp(<span class="string">'Converted Data @ 3000 RPM:'</span>); disp(data.RPM_3500(:,metricDataVect));
+disp(<span class="string">'Converted Data @ 2500 RPM:'</span>); disp(data.RPM_3500(:,metricDataVect));
+disp(<span class="string">'Converted Data @ 2000 RPM:'</span>); disp(data.RPM_3500(:,metricDataVect));
+disp(<span class="string">'Converted Data @ 1500 RPM:'</span>); disp(data.RPM_3500(:,metricDataVect));
+
+<span class="comment">% Show actual delta pressure and mass flow</span>
+disp(<span class="string">'Delta Pressure and Mass Flow @ 3500 RPM:'</span>); disp(data.RPM_3500(:,pressAndMassVect));
+disp(<span class="string">'Delta Pressure and Mass Flow @ 3000 RPM:'</span>); disp(data.RPM_3000(:,pressAndMassVect));
+disp(<span class="string">'Delta Pressure and Mass Flow @ 2500 RPM:'</span>); disp(data.RPM_2500(:,pressAndMassVect));
+disp(<span class="string">'Delta Pressure and Mass Flow @ 2000 RPM:'</span>); disp(data.RPM_2000(:,pressAndMassVect));
+disp(<span class="string">'Delta Pressure and Mass Flow @ 1500 RPM:'</span>); disp(data.RPM_1500(:,pressAndMassVect));
+
+<span class="comment">% Show actual delta pressure and mass flow</span>
+disp(<span class="string">'Head Data @ 3500 RPM:'</span>); disp(data.RPM_3500(:,headVect));
+disp(<span class="string">'Head Data @ 3000 RPM:'</span>); disp(data.RPM_3000(:,headVect));
+disp(<span class="string">'Head Data @ 2500 RPM:'</span>); disp(data.RPM_2500(:,headVect));
+disp(<span class="string">'Head Data @ 2000 RPM:'</span>); disp(data.RPM_2000(:,headVect));
+disp(<span class="string">'Head Data @ 1500 RPM:'</span>); disp(data.RPM_1500(:,headVect));
+
+<span class="comment">% Show work data</span>
+disp(<span class="string">'Work Data @ 3500 RPM:'</span>); disp(data.RPM_3500(:,workVect));
+disp(<span class="string">'Work Data @ 3000 RPM:'</span>); disp(data.RPM_3000(:,workVect));
+disp(<span class="string">'Work Data @ 2500 RPM:'</span>); disp(data.RPM_2500(:,workVect));
+disp(<span class="string">'Work Data @ 2000 RPM:'</span>); disp(data.RPM_2000(:,workVect));
+disp(<span class="string">'Work Data @ 1500 RPM:'</span>); disp(data.RPM_1500(:,workVect));
 </pre><pre class="codeoutput">Raw Motor Data @ 3500 RPM:
     valveSetting    motorActual_RPM    motorActual_SD_RPM    deltaP_inH20    deltaP_SD_inH20    flow_GPM    flow_SD_GPM    torque_lbft    torque_SD_lbft
     ____________    _______________    __________________    ____________    _______________    ________    ___________    ___________    ______________
@@ -231,18 +317,218 @@ Raw Motor Data @ 1500 RPM:
          40             1551.2               10.553             137.21           0.34492          8.626      0.046152          0.36                  0  
          20             1550.2               10.858             139.39          0.057184          3.288      0.016432         0.318          0.0044721  
 
-</pre><img vspace="5" hspace="5" src="efficiencyCalculations_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+Converted Data @ 3500 RPM:
+    valveSetting    motorActual_rad    motorActual_SD_rad    deltaP_Pa_meas    deltaP_SD_Pa_meas     flow_m3s     flow_SD_m3s    torque_Nm    torque_SD_Nm
+    ____________    _______________    __________________    ______________    _________________    __________    ___________    _________    ____________
+
+        100                368               2.6434            1.3486e+05           292.46           0.0034819    2.0444e-06      2.8011       0.0074261  
+         80             368.38               2.4266            1.4351e+05            258.4            0.003233    1.4524e-06      2.7415       0.0060634  
+         60             370.51               2.1966            1.5935e+05           69.312           0.0026187    4.9757e-06      2.5354       0.0095871  
+         40             371.79               2.4156            1.7934e+05           155.23           0.0012685    2.5472e-06      1.9768       0.0060634  
+         20             373.56               1.8201            1.8307e+05           227.32          0.00048844    6.6079e-06       1.646       0.0074261  
+
+Converted Data @ 3000 RPM:
+    valveSetting    motorActual_rad    motorActual_SD_rad    deltaP_Pa_meas    deltaP_SD_Pa_meas     flow_m3s     flow_SD_m3s    torque_Nm    torque_SD_Nm
+    ____________    _______________    __________________    ______________    _________________    __________    ___________    _________    ____________
+
+        100                368               2.6434            1.3486e+05           292.46           0.0034819    2.0444e-06      2.8011       0.0074261  
+         80             368.38               2.4266            1.4351e+05            258.4            0.003233    1.4524e-06      2.7415       0.0060634  
+         60             370.51               2.1966            1.5935e+05           69.312           0.0026187    4.9757e-06      2.5354       0.0095871  
+         40             371.79               2.4156            1.7934e+05           155.23           0.0012685    2.5472e-06      1.9768       0.0060634  
+         20             373.56               1.8201            1.8307e+05           227.32          0.00048844    6.6079e-06       1.646       0.0074261  
+
+Converted Data @ 2500 RPM:
+    valveSetting    motorActual_rad    motorActual_SD_rad    deltaP_Pa_meas    deltaP_SD_Pa_meas     flow_m3s     flow_SD_m3s    torque_Nm    torque_SD_Nm
+    ____________    _______________    __________________    ______________    _________________    __________    ___________    _________    ____________
+
+        100                368               2.6434            1.3486e+05           292.46           0.0034819    2.0444e-06      2.8011       0.0074261  
+         80             368.38               2.4266            1.4351e+05            258.4            0.003233    1.4524e-06      2.7415       0.0060634  
+         60             370.51               2.1966            1.5935e+05           69.312           0.0026187    4.9757e-06      2.5354       0.0095871  
+         40             371.79               2.4156            1.7934e+05           155.23           0.0012685    2.5472e-06      1.9768       0.0060634  
+         20             373.56               1.8201            1.8307e+05           227.32          0.00048844    6.6079e-06       1.646       0.0074261  
+
+Converted Data @ 2000 RPM:
+    valveSetting    motorActual_rad    motorActual_SD_rad    deltaP_Pa_meas    deltaP_SD_Pa_meas     flow_m3s     flow_SD_m3s    torque_Nm    torque_SD_Nm
+    ____________    _______________    __________________    ______________    _________________    __________    ___________    _________    ____________
+
+        100                368               2.6434            1.3486e+05           292.46           0.0034819    2.0444e-06      2.8011       0.0074261  
+         80             368.38               2.4266            1.4351e+05            258.4            0.003233    1.4524e-06      2.7415       0.0060634  
+         60             370.51               2.1966            1.5935e+05           69.312           0.0026187    4.9757e-06      2.5354       0.0095871  
+         40             371.79               2.4156            1.7934e+05           155.23           0.0012685    2.5472e-06      1.9768       0.0060634  
+         20             373.56               1.8201            1.8307e+05           227.32          0.00048844    6.6079e-06       1.646       0.0074261  
+
+Converted Data @ 1500 RPM:
+    valveSetting    motorActual_rad    motorActual_SD_rad    deltaP_Pa_meas    deltaP_SD_Pa_meas     flow_m3s     flow_SD_m3s    torque_Nm    torque_SD_Nm
+    ____________    _______________    __________________    ______________    _________________    __________    ___________    _________    ____________
+
+        100                368               2.6434            1.3486e+05           292.46           0.0034819    2.0444e-06      2.8011       0.0074261  
+         80             368.38               2.4266            1.4351e+05            258.4            0.003233    1.4524e-06      2.7415       0.0060634  
+         60             370.51               2.1966            1.5935e+05           69.312           0.0026187    4.9757e-06      2.5354       0.0095871  
+         40             371.79               2.4156            1.7934e+05           155.23           0.0012685    2.5472e-06      1.9768       0.0060634  
+         20             373.56               1.8201            1.8307e+05           227.32          0.00048844    6.6079e-06       1.646       0.0074261  
+
+Delta Pressure and Mass Flow @ 3500 RPM:
+    valveSetting    deltaP_Pa     deltaP_SD_Pa    massFlow_kgs    massFlow_SD_kgs
+    ____________    __________    ____________    ____________    _______________
+
+        100         1.3393e+05       292.46          3.4744          0.0020399   
+         80         1.4258e+05        258.4           3.226          0.0014493   
+         60         1.5842e+05       69.312          2.6131          0.0049649   
+         40         1.7841e+05       155.23          1.2657          0.0025416   
+         20         1.8214e+05       227.32         0.48738          0.0065936   
+
+Delta Pressure and Mass Flow @ 3000 RPM:
+    valveSetting    deltaP_Pa     deltaP_SD_Pa    massFlow_kgs    massFlow_SD_kgs
+    ____________    __________    ____________    ____________    _______________
+
+        100         1.0526e+05       199.21          3.0765          0.0019908   
+         80          1.109e+05       693.79          2.8824            0.05664   
+         60         1.2229e+05       262.01          2.3051           0.010029   
+         40         1.3662e+05        96.52           1.108          0.0044515   
+         20         1.3879e+05       23.995         0.45515           0.045603   
+
+Delta Pressure and Mass Flow @ 2500 RPM:
+    valveSetting    deltaP_Pa    deltaP_SD_Pa    massFlow_kgs    massFlow_SD_kgs
+    ____________    _________    ____________    ____________    _______________
+
+        100           72540         137.55          2.5559          0.0023131   
+         80           76675         151.95          2.3732          0.0059789   
+         60           84271         110.26           1.916          0.0078452   
+         40           93984         93.077         0.91937          0.0054264   
+         20           95596         103.18         0.33894          0.0036054   
+
+Delta Pressure and Mass Flow @ 2000 RPM:
+    valveSetting    deltaP_Pa    deltaP_SD_Pa    massFlow_kgs    massFlow_SD_kgs
+    ____________    _________    ____________    ____________    _______________
+
+        100           46174         270.31          2.0437          0.0023806   
+         80           48710         129.95          1.8938          0.0033431   
+         60           53824         165.46          1.5105          0.0017582   
+         40           59794          39.87         0.72812          0.0030712   
+         20           60887         60.427         0.28039          0.0010534   
+
+Delta Pressure and Mass Flow @ 1500 RPM:
+    valveSetting    deltaP_Pa    deltaP_SD_Pa    massFlow_kgs    massFlow_SD_kgs
+    ____________    _________    ____________    ____________    _______________
+
+        100           25725         70.277          1.5285          0.0014077   
+         80           26974         78.958          1.4221          0.0022257   
+         60           30031         50.178          1.1159          0.0013792   
+         40           33246         85.916         0.54304          0.0029054   
+         20           33789         14.244         0.20699          0.0010344   
+
+Head Data @ 3500 RPM:
+    valveSetting    elevHead_m    elevHead_SD_m    pressHead_m    pressHead_SD_m    totalHead_m    totalHead_SD_m
+    ____________    __________    _____________    ___________    ______________    ___________    ______________
+
+        100          0.09525            0            13.682          0.029878         13.777          0.029878   
+         80          0.09525            0            14.565          0.026397         14.661          0.026397   
+         60          0.09525            0            16.184         0.0070808         16.279         0.0070808   
+         40          0.09525            0            18.226          0.015858         18.321          0.015858   
+         20          0.09525            0            18.607          0.023223         18.702          0.023223   
+
+Head Data @ 3000 RPM:
+    valveSetting    elevHead_m    elevHead_SD_m    pressHead_m    pressHead_SD_m    totalHead_m    totalHead_SD_m
+    ____________    __________    _____________    ___________    ______________    ___________    ______________
+
+        100          0.09525            0            10.753          0.020351         10.848          0.020351   
+         80          0.09525            0             11.33          0.070876         11.425          0.070876   
+         60          0.09525            0            12.493          0.026766         12.588          0.026766   
+         40          0.09525            0            13.957         0.0098603         14.052         0.0098603   
+         20          0.09525            0            14.179         0.0024513         14.274         0.0024513   
+
+Head Data @ 2500 RPM:
+    valveSetting    elevHead_m    elevHead_SD_m    pressHead_m    pressHead_SD_m    totalHead_m    totalHead_SD_m
+    ____________    __________    _____________    ___________    ______________    ___________    ______________
+
+        100          0.09525            0            7.4106          0.014052         7.5058          0.014052   
+         80          0.09525            0             7.833          0.015523         7.9282          0.015523   
+         60          0.09525            0             8.609          0.011264         8.7042          0.011264   
+         40          0.09525            0            9.6013         0.0095086         9.6966         0.0095086   
+         20          0.09525            0            9.7659          0.010541         9.8612          0.010541   
+
+Head Data @ 2000 RPM:
+    valveSetting    elevHead_m    elevHead_SD_m    pressHead_m    pressHead_SD_m    totalHead_m    totalHead_SD_m
+    ____________    __________    _____________    ___________    ______________    ___________    ______________
+
+        100          0.09525            0            4.7171          0.027614         4.8123          0.027614   
+         80          0.09525            0            4.9761          0.013276         5.0714          0.013276   
+         60          0.09525            0            5.4986          0.016903         5.5938          0.016903   
+         40          0.09525            0            6.1084          0.004073         6.2037          0.004073   
+         20          0.09525            0            6.2201         0.0061731         6.3153         0.0061731   
+
+Head Data @ 1500 RPM:
+    valveSetting    elevHead_m    elevHead_SD_m    pressHead_m    pressHead_SD_m    totalHead_m    totalHead_SD_m
+    ____________    __________    _____________    ___________    ______________    ___________    ______________
+
+        100          0.09525            0             2.628         0.0071794         2.7233         0.0071794   
+         80          0.09525            0            2.7556         0.0080662         2.8509         0.0080662   
+         60          0.09525            0            3.0679         0.0051261         3.1632         0.0051261   
+         40          0.09525            0            3.3963          0.008777         3.4916          0.008777   
+         20          0.09525            0            3.4518         0.0014551          3.547         0.0014551   
+
+Work Data @ 3500 RPM:
+    valveSetting    workActual_J    workActual_SD_J    workIdeal_J    workIdeal_SD_J    efficiency
+    ____________    ____________    _______________    ___________    ______________    __________
+
+        100            1030.8           2.6434           469.57           139.38          45.554  
+         80            1009.9           2.4266           463.96           147.26          45.941  
+         60            939.38           2.1966            417.3           161.74          44.423  
+         40            734.96           2.4156           227.49           180.16          30.953  
+         20            614.87           1.8201           89.419           183.53          14.543  
+
+Work Data @ 3000 RPM:
+    valveSetting    workActual_J    workActual_SD_J    workIdeal_J    workIdeal_SD_J    efficiency
+    ____________    ____________    _______________    ___________    ______________    __________
+
+        100            718.76           1.8244           327.41           110.62          45.551  
+         80            700.97           2.3379           323.06           115.59          46.087  
+         60            649.07           2.1103           284.65           125.54          43.855  
+         40            506.08           1.9275           152.74           138.28          30.181  
+         20            422.38           1.7312           63.734            140.1           15.09  
+
+Work Data @ 2500 RPM:
+    valveSetting    workActual_J    workActual_SD_J    workIdeal_J    workIdeal_SD_J    efficiency
+    ____________    ____________    _______________    ___________    ______________    __________
+
+        100            426.07           0.80653           188.2           77.784           44.17  
+         80            414.71           0.98349          184.58           81.186          44.508  
+         60            383.21           0.60065          163.61           87.433          42.694  
+         40            303.16             1.375          87.453            95.55          28.848  
+         20            259.99            0.8292          32.789           96.795          12.612  
+
+Work Data @ 2000 RPM:
+    valveSetting    workActual_J    workActual_SD_J    workIdeal_J    workIdeal_SD_J    efficiency
+    ____________    ____________    _______________    ___________    ______________    __________
+
+        100            227.96            1.5849          96.482            51.29          42.325  
+         80            223.05           0.98957          94.215           53.106          42.239  
+         60            208.31            1.1248          82.889           56.841          39.792  
+         40            166.55            1.0712          44.312           61.276          26.605  
+         20             144.1            0.6198          17.371           62.014          12.055  
+
+Work Data @ 1500 RPM:
+    valveSetting    workActual_J    workActual_SD_J    workIdeal_J    workIdeal_SD_J    efficiency
+    ____________    ____________    _______________    ___________    ______________    __________
+
+        100             105.4           1.1952           40.835           30.636          38.742  
+         80            103.82           1.2635           39.772           31.254          38.308  
+         60            96.725           1.2642           34.627           32.905            35.8  
+         40            79.289           1.1051             18.6           34.664          23.459  
+         20            69.993            1.137           7.2025           34.856           10.29  
+
+</pre><img vspace="5" hspace="5" src="efficiencyCalculations_01.png" alt=""> <img vspace="5" hspace="5" src="efficiencyCalculations_02.png" alt=""> <img vspace="5" hspace="5" src="efficiencyCalculations_03.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Work for Lab 6: Pump Efficieny
 % This code written by Michael White, 4/21/2021
 clear; clc; close all;
 
 % Read in data from lab
-rawData.RPM_3500 = readtable('data3500.xlsx');
-rawData.RPM_3000 = readtable('data3000.xlsx');
-rawData.RPM_2500 = readtable('data2500.xlsx');
-rawData.RPM_2000 = readtable('data2000.xlsx');
-rawData.RPM_1500 = readtable('data1500.xlsx');
+data.RPM_3500 = readtable('data3500.xlsx');
+data.RPM_3000 = readtable('data3000.xlsx');
+data.RPM_2500 = readtable('data2500.xlsx');
+data.RPM_2000 = readtable('data2000.xlsx');
+data.RPM_1500 = readtable('data1500.xlsx');
 
 % Generate cell list for referencing data names
 rpmList = {'RPM_3500','RPM_3000','RPM_2500','RPM_2000','RPM_1500'};
@@ -252,18 +538,18 @@ params.rho = 997.83; %kg/m3
 params.g = 9.81; %m/s2
 params.heightDiff_in = 3.75; %in
 
-%% Calculations using imported data
+% - - - Calculations using imported data - - - 
 % Convert values to metric/angular velocity
 params.heightDiff_m = params.heightDiff_in*0.0254;
 for i = 1:length(rpmList)
-    data.(char(rpmList(i))).motorActual_rad = rawData.(char(rpmList(i))).motorActual_RPM*2*pi/60;
-    data.(char(rpmList(i))).motorActual_SD_rad = rawData.(char(rpmList(i))).motorActual_SD_RPM*2*pi/60;
-    data.(char(rpmList(i))).deltaP_Pa_meas = rawData.(char(rpmList(i))).deltaP_inH20*249.088908; 
-    data.(char(rpmList(i))).deltaP_SD_Pa_meas = rawData.(char(rpmList(i))).deltaP_SD_inH20*249.088908; 
-    data.(char(rpmList(i))).flow_m3s = rawData.(char(rpmList(i))).flow_GPM/15850.323141;
-    data.(char(rpmList(i))).flow_SD_m3s = rawData.(char(rpmList(i))).flow_SD_GPM/15850.323141;
-    data.(char(rpmList(i))).torque_Nm = rawData.(char(rpmList(i))).torque_lbft*1.35582;
-    data.(char(rpmList(i))).torque_SD_Nm = rawData.(char(rpmList(i))).torque_SD_lbft*1.35582;
+    data.(char(rpmList(i))).motorActual_rad = data.(char(rpmList(i))).motorActual_RPM*2*pi/60;
+    data.(char(rpmList(i))).motorActual_SD_rad = data.(char(rpmList(i))).motorActual_SD_RPM*2*pi/60;
+    data.(char(rpmList(i))).deltaP_Pa_meas = data.(char(rpmList(i))).deltaP_inH20*249.088908; 
+    data.(char(rpmList(i))).deltaP_SD_Pa_meas = data.(char(rpmList(i))).deltaP_SD_inH20*249.088908; 
+    data.(char(rpmList(i))).flow_m3s = data.(char(rpmList(i))).flow_GPM/15850.323141;
+    data.(char(rpmList(i))).flow_SD_m3s = data.(char(rpmList(i))).flow_SD_GPM/15850.323141;
+    data.(char(rpmList(i))).torque_Nm = data.(char(rpmList(i))).torque_lbft*1.35582;
+    data.(char(rpmList(i))).torque_SD_Nm = data.(char(rpmList(i))).torque_SD_lbft*1.35582;
 end
 
 % Calculate hydrostatic
@@ -290,47 +576,91 @@ end
 
 % Find ideal work, actual work, and efficiency
 for i = 1:length(rpmList)
-    data.(char(rpmList(i))).workActual = data.(char(rpmList(i))).torque_Nm...
+    data.(char(rpmList(i))).workActual_J = data.(char(rpmList(i))).torque_Nm...
         .* data.(char(rpmList(i))).motorActual_rad;
-    data.(char(rpmList(i))).workIdeal = data.(char(rpmList(i))).massFlow_kgs*params.g...
+    data.(char(rpmList(i))).workActual_SD_J = sqrt(data.(char(rpmList(i))).torque_SD_Nm.^2 ...
+        + data.(char(rpmList(i))).motorActual_SD_rad.^2);
+    data.(char(rpmList(i))).workIdeal_J = data.(char(rpmList(i))).massFlow_kgs*params.g...
         .* data.(char(rpmList(i))).totalHead_m;
-    data.(char(rpmList(i))).efficiency = 100*data.(char(rpmList(i))).workIdeal...
-        ./ data.(char(rpmList(i))).workActual;
+    data.(char(rpmList(i))).workIdeal_SD_J = params.g*sqrt(data.(char(rpmList(i))).massFlow_kgs.^2 ...
+        + data.(char(rpmList(i))).totalHead_m.^2);
+    data.(char(rpmList(i))).efficiency = 100*data.(char(rpmList(i))).workIdeal_J...
+        ./ data.(char(rpmList(i))).workActual_J;
 end
 
 % Identify max efficiency in entire data set
-maxCalc.flowList = [rawData.RPM_3500.flow_GPM',rawData.RPM_3000.flow_GPM',...
-    rawData.RPM_2500.flow_GPM',rawData.RPM_2000.flow_GPM',rawData.RPM_1500.flow_GPM'];
-maxCalc.RPMList = [rawData.RPM_3500.motorActual_RPM',rawData.RPM_3000.motorActual_RPM',...
-    rawData.RPM_2500.motorActual_RPM',rawData.RPM_2000.motorActual_RPM',rawData.RPM_1500.motorActual_RPM'];
+maxCalc.flowList = [data.RPM_3500.flow_GPM',data.RPM_3000.flow_GPM',...
+    data.RPM_2500.flow_GPM',data.RPM_2000.flow_GPM',data.RPM_1500.flow_GPM'];
+maxCalc.RPMList = [data.RPM_3500.motorActual_RPM',data.RPM_3000.motorActual_RPM',...
+    data.RPM_2500.motorActual_RPM',data.RPM_2000.motorActual_RPM',data.RPM_1500.motorActual_RPM'];
 maxCalc.effList = [data.RPM_3500.efficiency',data.RPM_3000.efficiency',...
     data.RPM_2500.efficiency',data.RPM_2000.efficiency',data.RPM_1500.efficiency'];
 maxCalc.Point = [maxCalc.flowList(maxCalc.effList == max(maxCalc.effList)),...
     maxCalc.RPMList(maxCalc.effList == max(maxCalc.effList)),max(maxCalc.effList)];
 
-%% Post-Processing: Generating figures
+% - - - Post-Processing: Generating figures and writing tables - - -
+% Write data to external excel file
+for i = 1:length(rpmList)
+    writetable(data.(char(rpmList(i))),strcat('data/',char(rpmList(i)),'outputData.xlsx'));
+end
+
+% Plot 2D figure - Pressure Head
+figure; hold on;
+for i = 1:length(rpmList)
+    plot(...
+        data.(char(rpmList(i))).flow_GPM,...
+        data.(char(rpmList(i))).pressHead_m,...
+        'LineWidth',2);
+end
+title('Pressure Head (m) vs. Flow (GPM)');
+xlabel('Flow (GPM)');
+ylabel('Pressure Head (m)');
+set(gcf,'Position',get(0,'Screensize')); grid on;
+RPM_legend = legend(...
+    {'motorRPM = 3500','motorRPM = 3000','motorRPM = 2500',...
+    'motorRPM = 2000','motorRPM = 1500'});
+
+% Plot 2D figure - Efficiency
+figure; hold on;
+for i = 1:length(rpmList)
+    plot(...
+        data.(char(rpmList(i))).flow_GPM,...
+        data.(char(rpmList(i))).efficiency,...
+        'LineWidth',2);
+end
+title('Efficiency vs. Flow (GPM)(%)');
+xlabel('Flow (GPM)');
+ylabel('Efficiency (%)');
+set(gcf,'Position',get(0,'Screensize')); grid on;
+dataPlot.maxPoint = plot(maxCalc.Point(1),maxCalc.Point(3),...
+    'r*','MarkerSize',8,'LineWidth',2);
+RPM_legend = legend(...
+    {'motorRPM = 3500','motorRPM = 3000','motorRPM = 2500',...
+    'motorRPM = 2000','motorRPM = 1500','Max Efficiency'},'Location','southeast');
+
+% Plot 3D figure
 figure;
 % Draw lines for each rpm
 for i = 1:length(rpmList)
     dataPlot.(char(rpmList(i))) = plot3(...
-        rawData.(char(rpmList(i))).flow_GPM,...
-        rawData.(char(rpmList(i))).motorActual_RPM,...
+        data.(char(rpmList(i))).flow_GPM,...
+        data.(char(rpmList(i))).motorActual_RPM,...
         data.(char(rpmList(i))).efficiency,...
         'LineWidth',2);
     hold on;
 end
-dataPlot.maxPoint = plot3(maxCalc.Point(1),maxCalc.Point(2),maxCalc.Point(3),...
+dataPlot.maxPoint_3D = plot3(maxCalc.Point(1),maxCalc.Point(2),maxCalc.Point(3),...
     'r*','MarkerSize',8,'LineWidth',2);
-RPM_legend = legend(...
+RPM_legend_3D = legend(...
     'motorRPM = 3500','motorRPM = 3000','motorRPM = 2500',...
     'motorRPM = 2000','motorRPM = 1500','Max Efficiency');
-RPM_legend.AutoUpdate = false;
+RPM_legend_3D.AutoUpdate = false;
 
 % Create fill and mesh to add 3D shape
 for i = 1:length(rpmList)
     for j = 1:length(rpmList)
-        xVect(j) = rawData.(char(rpmList(j))).flow_GPM(i);
-        yVect(j) = rawData.(char(rpmList(j))).motorActual_RPM(i);
+        xVect(j) = data.(char(rpmList(j))).flow_GPM(i);
+        yVect(j) = data.(char(rpmList(j))).motorActual_RPM(i);
         zVect(j) = data.(char(rpmList(j))).efficiency(i);
     end
     plot3(xVect,yVect,zVect,'-k');
@@ -343,16 +673,53 @@ for i = 1:length(rpmList)
 end
 
 % Add cleaning features to 3D figure
-grid on;
+set(gcf,'Position',get(0,'Screensize')); grid on;
+title('3D Flow (GPM) vs. Efficiency (%)');
 xlabel('Flow (GPM)');
 ylabel('Motor Setting (RPM)');
 zlabel('Efficiency (%)');
 
-% Show tables as they appear in report
-disp('Raw Motor Data @ 3500 RPM:'); disp(rawData.RPM_3500);
-disp('Raw Motor Data @ 3000 RPM:'); disp(rawData.RPM_3000);
-disp('Raw Motor Data @ 2500 RPM:'); disp(rawData.RPM_2500);
-disp('Raw Motor Data @ 2000 RPM:'); disp(rawData.RPM_2000);
-disp('Raw Motor Data @ 1500 RPM:'); disp(rawData.RPM_1500);
+% - - - Show Tables in Report Order - - -
+% Generate vectors to access data
+rawDataVect = [1,2:9];
+metricDataVect = [1,10:17];
+pressAndMassVect = [1,18:21];
+headVect = [1,22:27];
+workVect = [1,28:32];
+
+% Show raw data from motor
+disp('Raw Motor Data @ 3500 RPM:'); disp(data.RPM_3500(:,rawDataVect));
+disp('Raw Motor Data @ 3000 RPM:'); disp(data.RPM_3000(:,rawDataVect));
+disp('Raw Motor Data @ 2500 RPM:'); disp(data.RPM_2500(:,rawDataVect));
+disp('Raw Motor Data @ 2000 RPM:'); disp(data.RPM_2000(:,rawDataVect));
+disp('Raw Motor Data @ 1500 RPM:'); disp(data.RPM_1500(:,rawDataVect));
+
+% Show converted raw data from motor
+disp('Converted Data @ 3500 RPM:'); disp(data.RPM_3500(:,metricDataVect));
+disp('Converted Data @ 3000 RPM:'); disp(data.RPM_3500(:,metricDataVect));
+disp('Converted Data @ 2500 RPM:'); disp(data.RPM_3500(:,metricDataVect));
+disp('Converted Data @ 2000 RPM:'); disp(data.RPM_3500(:,metricDataVect));
+disp('Converted Data @ 1500 RPM:'); disp(data.RPM_3500(:,metricDataVect));
+
+% Show actual delta pressure and mass flow
+disp('Delta Pressure and Mass Flow @ 3500 RPM:'); disp(data.RPM_3500(:,pressAndMassVect));
+disp('Delta Pressure and Mass Flow @ 3000 RPM:'); disp(data.RPM_3000(:,pressAndMassVect));
+disp('Delta Pressure and Mass Flow @ 2500 RPM:'); disp(data.RPM_2500(:,pressAndMassVect));
+disp('Delta Pressure and Mass Flow @ 2000 RPM:'); disp(data.RPM_2000(:,pressAndMassVect));
+disp('Delta Pressure and Mass Flow @ 1500 RPM:'); disp(data.RPM_1500(:,pressAndMassVect));
+
+% Show actual delta pressure and mass flow
+disp('Head Data @ 3500 RPM:'); disp(data.RPM_3500(:,headVect));
+disp('Head Data @ 3000 RPM:'); disp(data.RPM_3000(:,headVect));
+disp('Head Data @ 2500 RPM:'); disp(data.RPM_2500(:,headVect));
+disp('Head Data @ 2000 RPM:'); disp(data.RPM_2000(:,headVect));
+disp('Head Data @ 1500 RPM:'); disp(data.RPM_1500(:,headVect));
+
+% Show work data
+disp('Work Data @ 3500 RPM:'); disp(data.RPM_3500(:,workVect));
+disp('Work Data @ 3000 RPM:'); disp(data.RPM_3000(:,workVect));
+disp('Work Data @ 2500 RPM:'); disp(data.RPM_2500(:,workVect));
+disp('Work Data @ 2000 RPM:'); disp(data.RPM_2000(:,workVect));
+disp('Work Data @ 1500 RPM:'); disp(data.RPM_1500(:,workVect));
 ##### SOURCE END #####
 --></body></html>
